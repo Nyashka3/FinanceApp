@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="@string/settings_title"
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            android:defaultValue="ru"
+            android:entries="@array/language_entries"
+            android:entryValues="@array/language_values"
+            android:key="pref_language"
+            android:title="@string/settings_language"
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_language"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:defaultValue="system"
+            android:entries="@array/theme_entries"
+            android:entryValues="@array/theme_values"
+            android:key="pref_theme"
+            android:title="@string/settings_theme"
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_theme"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="pref_dynamic_colors"
+            android:title="@string/settings_dynamic_colors"
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_color_palette" />
+
+        <ListPreference
+            android:defaultValue="RUB"
+            android:entries="@array/currency_entries"
+            android:entryValues="@array/currency_values"
+            android:key="pref_currency"
+            android:title="@string/settings_currency"
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_currency"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="pref_notifications"
+            android:title="@string/settings_notifications"
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_notifications" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_about"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="pref_about"
+            android:title="@string/settings_about"
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_info" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

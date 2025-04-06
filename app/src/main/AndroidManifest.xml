@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:name=".DiplomApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Diplom"
+        tools:targetApi="31">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".expenses.ExpensesActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".expenses.ExpenseDetailActivity"
+            android:exported="false"
+            android:parentActivityName=".expenses.ExpensesActivity" />
+
+        <activity
+            android:name=".analytics.AnalyticsActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".taxes.TaxActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".taxes.TaxDetailActivity"
+            android:exported="false"
+            android:parentActivityName=".taxes.TaxActivity" />
+
+        <activity
+            android:name=".taxes.TaxCalculatorActivity"
+            android:exported="false"
+            android:parentActivityName=".taxes.TaxActivity" />
+
+        <activity
+            android:name=".currency.CurrencyActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".currency.CurrencyDetailActivity"
+            android:exported="false"
+            android:parentActivityName=".currency.CurrencyActivity" />
+
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <receiver
+            android:name=".utils.NotificationReceiver"
+            android:exported="false" />
+
+    </application>
+
+</manifest>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Массивы для языков -->
+    <string-array name="language_entries">
+        <item>@string/language_russian</item>
+        <item>@string/language_english</item>
+        <item>@string/language_lorem</item>
+    </string-array>
+
+    <string-array name="language_values">
+        <item>ru</item>
+        <item>en</item>
+        <item>lorem</item>
+    </string-array>
+
+    <!-- Массивы для тем -->
+    <string-array name="theme_entries">
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_system</item>
+    </string-array>
+
+    <string-array name="theme_values">
+        <item>light</item>
+        <item>dark</item>
+        <item>system</item>
+    </string-array>
+
+    <!-- Массивы для валют -->
+    <string-array name="currency_entries">
+        <item>Российский рубль (₽)</item>
+        <item>Доллар США ($)</item>
+        <item>Евро (€)</item>
+        <item>Юань (¥)</item>
+    </string-array>
+
+    <string-array name="currency_values">
+        <item>RUB</item>
+        <item>USD</item>
+        <item>EUR</item>
+        <item>CNY</item>
+    </string-array>
+
+    <!-- Массивы для типов налогов -->
+    <string-array name="tax_type_entries">
+        <item>@string/usn_income</item>
+        <item>@string/usn_income_expense</item>
+        <item>@string/patent</item>
+        <item>@string/insurance_contributions</item>
+        <item>@string/income_tax</item>
+        <item>@string/property_tax</item>
+    </string-array>
+
+    <string-array name="tax_status_entries">
+        <item>@string/status_paid</item>
+        <item>@string/status_upcoming</item>
+        <item>@string/status_overdue</item>
+    </string-array>
+</resources>
