@@ -21,6 +21,9 @@ import com.google.android.material.snackbar.Snackbar;
 /**
  * Главная активность приложения
  */
+/**
+ * Главная активность приложения
+ */
 public class MainActivity extends AppCompatActivity implements ExitDialogFragment.ExitDialogListener {
 
     private ActivityMainBinding binding;
