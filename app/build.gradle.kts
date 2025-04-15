@@ -40,6 +40,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.room.common)
     implementation(libs.room.runtime.android)
+    annotationProcessor(libs.room.compiler)
 
     // Retrofit
     implementation(libs.retrofit.core)
