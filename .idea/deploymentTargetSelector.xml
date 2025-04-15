@@ -7,7 +7,7 @@
       </SelectionState>
       <SelectionState runConfigName="MainActivity">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-04-02T11:03:10.530010700Z">
+        <DropdownSelection timestamp="2025-04-06T17:30:33.950836100Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Torqu\.android\avd\Pixel_3_XL_API_30.avd" />
