@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Общие строки -->
+    <string name="app_name">Budget Optimizer</string>
+    <string name="action_settings">Настройки</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
+    <string name="delete">Удалить</string>
+    <string name="edit">Редактировать</string>
+    <string name="add">Добавить</string>
+    <string name="search">Поиск</string>
+    <string name="ok">OK</string>
+    <string name="error">Ошибка</string>
+    <string name="success">Успешно</string>
+    <string name="today">Сегодня</string>
+    <string name="yesterday">Вчера</string>
+    <string name="amount_format">%,.2f ₽</string>
+    <string name="loading">Загрузка...</string>
+    <string name="no_data_available">Нет данных</string>
+
+    <!-- Строки для диалога выхода -->
+    <string name="exit_dialog_title">Выход</string>
+    <string name="exit_dialog_message">Вы уверены, что хотите выйти из приложения?</string>
+
+    <!-- Строки для главного экрана -->
+    <string name="budget_summary">Сводка по бюджету</string>
+    <string name="view_expenses">Просмотр расходов</string>
+    <string name="view_analytics">Аналитика</string>
+    <string name="add_expense">Добавить расход</string>
+    <string name="add_expense_coming_soon">Добавление расхода скоро будет доступно</string>
+    <string name="settings">Настройки</string>
+
+    <!-- Строки для экрана расходов -->
+    <string name="expenses">Расходы</string>
+    <string name="expenses_count">Показано %d расходов</string>
+    <string name="total_amount">Всего: %s</string>
+    <string name="no_expenses">Расходы не найдены</string>
+    <string name="new_expense">Новый расход</string>
+    <string name="edit_expense">Редактирование расхода</string>
+    <string name="expense_title">Название</string>
+    <string name="expense_amount">Сумма</string>
+    <string name="expense_category">Категория</string>
+    <string name="expense_date">Дата</string>
+    <string name="expense_description">Описание</string>
+    <string name="expense_saved">Расход сохранен</string>
+    <string name="expense_deleted">Расход удален</string>
+    <string name="confirm_delete_expense">Вы уверены, что хотите удалить этот расход?</string>
+    <string name="all_categories">Все категории</string>
+    <string name="select_date">Выбрать дату</string>
+    <string name="date_filter_active">Фильтр по дате активен</string>
+    <string name="reset_filters">Сбросить фильтры</string>
+    <string name="filters_reset">Фильтры сброшены</string>
+    <string name="sort_by">Сортировать по</string>
+    <string name="sort_date_newest">Дата (сначала новые)</string>
+    <string name="sort_date_oldest">Дата (сначала старые)</string>
+    <string name="sort_amount_highest">Сумма (по убыванию)</string>
+    <string name="sort_amount_lowest">Сумма (по возрастанию)</string>
+    <string name="sort_name_az">Название (А-Я)</string>
+    <string name="sort_name_za">Название (Я-А)</string>
+    <string name="is_material_cost">Материальные затраты</string>
+    <string name="is_labor_cost">Трудовые затраты</string>
+
+    <!-- Дополнительные строки налогов -->
+    <string name="income">Доход</string>
+    <string name="salary">Зарплата</string>
+    <string name="potential_yearly_income">Потенциально возможный годовой доход</string>
+    <string name="period_months">Период в месяцах (1-12)</string>
+    <string name="period_range_error">Период должен быть от 1 до 12 месяцев</string>
+    <string name="tax_rate">Налоговая ставка</string>
+    <string name="tax_base">Налоговая база</string>
+    <string name="select_tax_type">Выберите тип налога</string>
+    <string name="save_to_database">Сохранить налог в базу данных</string>
+
+    <!-- Строки для экрана аналитики -->
+    <string name="analytics">Аналитика</string>
+    <string name="expenses_analysis">Расходы</string>
+    <string name="efficiency_analysis">Эффективность</string>
+    <string name="tax_analysis">Налоги</string>
+    <string name="total_expenses">Всего расходов</string>
+    <string name="total_income">Всего доходов</string>
+    <string name="balance">Баланс</string>
+    <string name="forecast_expenses">Прогноз расходов</string>
+    <string name="expenses_by_category">Расходы по категориям</string>
+    <string name="no_analytics_data">Нет данных для анализа</string>
+    <string name="material_intensity">Материалоемкость</string>
+    <string name="labor_intensity">Трудоемкость</string>
+    <string name="production_type">Тип производства</string>
+    <string name="material_costs">Материальные затраты</string>
+    <string name="labor_costs">Трудовые затраты</string>
+    <string name="product_revenue">Выручка от продукции</string>
+    <string name="total_taxes">Всего налогов</string>
+    <string name="upcoming_taxes">Предстоящие налоги</string>
+    <string name="no_upcoming_taxes">Нет предстоящих налогов</string>
+    <string name="error_loading_tax_rates">Ошибка загрузки налоговых ставок</string>
+    <string name="error_loading_tax_history">Ошибка загрузки истории налоговых ставок</string>
+    <string name="error_api_connection">Ошибка соединения с API: %s</string>
+    <string name="no_tax_rates_found">Налоговые ставки не найдены</string>
+    <string name="no_tax_history_found">История налоговых ставок за %d год не найдена</string>
+    <string name="using_cached_data">Используются кэшированные данные</string>
+
+    <!-- Строки для статусов налогов -->
+    <string name="status_paid">Оплачен</string>
+    <string name="status_upcoming">Предстоящий</string>
+    <string name="status_overdue">Просрочен</string>
+
+    <!-- Строки для валют -->
+    <string name="currency_rates">Курсы валют</string>
+    <string name="no_currencies">Валюты не найдены</string>
+    <string name="search_currency">Поиск валюты</string>
+    <string name="error_currency_not_found">Валюта не найдена</string>
+    <string name="error_invalid_amount">Неверная сумма</string>
+    <string name="currency_converter">Конвертер валют</string>
+    <string name="amount">Сумма</string>
+    <string name="from_currency">Из</string>
+    <string name="to_currency">В</string>
+    <string name="convert">Конвертировать</string>
+    <string name="result">Результат</string>
+    <string name="currency_rate">Курс</string>
+    <string name="currency_change">Изменение</string>
+    <string name="last_updated">Последнее обновление: %s</string>
+    <string name="base_currency">Базовая валюта: %s</string>
+
+    <!-- Строки для настроек -->
+    <string name="settings_title">Настройки</string>
+    <string name="settings_language">Язык</string>
+    <string name="settings_theme">Тема</string>
+    <string name="settings_notifications">Уведомления</string>
+    <string name="settings_currency">Валюта</string>
+    <string name="settings_dynamic_colors">Динамические цвета</string>
+    <string name="settings_about">О приложении</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Темная</string>
+    <string name="theme_system">Как в системе</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_english">English</string>
+    <string name="language_lorem">Lorem Ipsum</string>
+    <string name="settings_saved">Настройки сохранены</string>
+
+    <!-- Строки для налогов -->
+    <string name="tax_name">Название налога</string>
+    <string name="tax_type">Тип налога</string>
+    <string name="tax_amount">Сумма налога</string>
+    <string name="tax_due_date">Срок уплаты</string>
+    <string name="tax_status">Статус</string>
+    <string name="tax_description">Описание</string>
+    <string name="tax_saved">Налог сохранен</string>
+    <string name="tax_deleted">Налог удален</string>
+    <string name="confirm_delete_tax">Вы уверены, что хотите удалить этот налог?</string>
+    <string name="usn_income">УСН \"Доходы\"</string>
+    <string name="usn_income_expense">УСН \"Доходы минус расходы\"</string>
+    <string name="patent">Патентная система</string>
+    <string name="insurance_contributions">Страховые взносы</string>
+    <string name="income_tax">НДФЛ</string>
+    <string name="property_tax">Налог на имущество</string>
+    <string name="tax_calculator">Калькулятор налогов</string>
+    <string name="calculate">Рассчитать</string>
+    <string name="tax_calculation_result">Результат расчета налога</string>
+
+    <!-- Недостающие строки для интерфейса -->
+    <string name="taxes">Налоги</string>
+    <string name="no_taxes">Налоги не найдены</string>
+    <string name="taxes_count">Показано %d налогов</string>
+    <string name="filters">Фильтры</string>
+    <string name="add_tax">Добавить налог</string>
+    <string name="new_tax">Новый налог</string>
+    <string name="edit_tax">Редактирование налога</string>
+    <string name="tax_payment_date">Дата оплаты</string>
+    <string name="clear">Очистить</string>
+    <string name="refresh">Обновить</string>
+    <string name="field_required">Это поле обязательно</string>
+    <string name="category_required">Выберите категорию</string>
+    <string name="invalid_amount">Некорректная сумма</string>
+
+    <!-- Строки для доступности -->
+    <string name="analytics_tabs">Вкладки аналитики</string>
+    <string name="analytics_content">Содержимое аналитики</string>
+
+    <!-- Строки для фрагмента анализа эффективности -->
+    <string name="efficiency_indicators">Показатели эффективности</string>
+    <string name="costs_data">Данные о затратах</string>
+    <string name="efficiency_chart">График эффективности</string>
+    <string name="efficiency_chart_description">График показателей материалоемкости и трудоемкости</string>
+
+    <!-- Строки для фрагментов аналитики -->
+    <string name="expenses_chart_description">Круговая диаграмма распределения расходов по категориям</string>
+    <string name="detailed_analysis">Детальный анализ</string>
+
+    <string name="current_tax_rates">Текущие налоговые ставки</string>
+    <string name="tax_history">История налоговых ставок</string>
+
+    <string name="adapterView_OnItemSelectedListener_null">AdapterView.OnItemSelectedListener не может быть null</string>
+
+</resources>
