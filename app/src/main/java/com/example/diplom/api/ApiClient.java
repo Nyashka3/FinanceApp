@@ -10,12 +10,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class ApiClient {
     private static final String BASE_URL = "https://api.example.com/v1/"; // Базовый URL для API
-    private static final String CURRENCY_BASE_URL = "https://api.exchangerate.host/"; // Базовый URL для API валют
+    private static final String CURRENCY_BASE_URL = "https://api.freecurrencyapi.com/"; // Базовый URL для API валют
+    public static final String SUPPORTED_CURRENCIES = "EUR,USD,JPY,BYN,CNY";
+
     private static Retrofit retrofit = null;
     private static Retrofit currencyRetrofit = null;
 
     /**
      * Получение экземпляра Retrofit клиента.
+     *
      * @return настроенный Retrofit клиент
      */
     public static Retrofit getClient() {
@@ -38,10 +41,48 @@ public class ApiClient {
     }
 
     /**
+     * Получение экземпляра Retrofit клиента для валют.
+     *
+     * @return настроенный Retrofit клиент для валют
+     */
+    public static Retrofit getCurrencyClient() {
+        if (currencyRetrofit == null) {
+            OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+            // Добавляем логирование HTTP запросов
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            httpClient.addInterceptor(logging);
+
+            var client = new OkHttpClient.Builder()
+                    .addInterceptor(new MyInterceptor())
+                    .build();
+
+            currencyRetrofit = new Retrofit.Builder()
+                    .baseUrl(CURRENCY_BASE_URL)
+                    .client(client)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(httpClient.build())
+                    .build();
+        }
+        return currencyRetrofit;
+    }
+
+    /**
      * Получение экземпляра API сервиса.
+     *
      * @return настроенный API сервис
      */
     public static ApiService getApiService() {
         return getClient().create(ApiService.class);
+    }
+
+    /**
+     * Получение экземпляра API сервиса для валют.
+     *
+     * @return настроенный API сервис для валют
+     */
+    public static CurrencyApiService getCurrencyApiService() {
+        return getCurrencyClient().create(CurrencyApiService.class);
     }
 }

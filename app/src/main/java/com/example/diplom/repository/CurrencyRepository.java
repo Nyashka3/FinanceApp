@@ -8,19 +8,23 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.diplom.api.ApiClient;
+import com.example.diplom.api.ApiService;
 import com.example.diplom.api.CurrencyApiService;
 import com.example.diplom.api.models.CurrencyRate;
 import com.example.diplom.database.AppDatabase;
 import com.example.diplom.database.dao.CurrencyDao;
 import com.example.diplom.database.entities.Currency;
 import com.example.diplom.utils.DateUtils;
+import com.example.diplom.utils.PreferenceUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,6 +40,8 @@ public class CurrencyRepository {
     private static final String PREF_CURRENCY_LAST_UPDATE = "currency_last_update";
     private static final long CURRENCY_CACHE_EXPIRATION = 3600000; // 1 час
 
+    private final Context context;
+
     private final CurrencyApiService apiService;
     private final CurrencyDao currencyDao;
     private final SharedPreferences preferences;
@@ -44,6 +50,7 @@ public class CurrencyRepository {
     private final MutableLiveData<Currency> baseCurrency = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private String baseCode = "RUB";
 
     public CurrencyRepository(Context context) {
         AppDatabase database = AppDatabase.getDatabase(context);
@@ -51,13 +58,20 @@ public class CurrencyRepository {
         apiService = ApiClient.getCurrencyApiService();
         preferences = context.getSharedPreferences("currency_prefs", Context.MODE_PRIVATE);
 
+        String language = PreferenceUtils.getAppLanguage(context);
+        baseCode = language.equals("en") ? "USD" : "RUB";
+
         // Загрузка данных из локальной базы данных
         AppDatabase.databaseWriteExecutor.execute(() -> {
             List<Currency> currencies = currencyDao.getAllCurrenciesSync();
+
+            //currencies.sort(Comparator.comparing(Currency::getCode).reversed()); через например клик листенер
+
             allCurrencies.postValue(currencies);
             loadPopularCurrencies();
             loadBaseCurrency();
         });
+        this.context = context;
     }
 
     /**
@@ -70,28 +84,43 @@ public class CurrencyRepository {
         // Проверяем, нужно ли обновлять данные из API
         if (currentTime - lastUpdate > CURRENCY_CACHE_EXPIRATION) {
             isLoading.setValue(true);
-            apiService.getCurrentRates().enqueue(new Callback<List<CurrencyRate>>() {
+
+            String language = PreferenceUtils.getAppLanguage(context);
+            baseCode = language.equals("en") ? "USD" : "RUB";
+
+
+            apiService.getCurrentRates(
+                    ApiClient.SUPPORTED_CURRENCIES,
+                    baseCode
+            ).enqueue(new Callback<>() {
                 @Override
-                public void onResponse(Call<List<CurrencyRate>> call, Response<List<CurrencyRate>> response) {
+                public void onResponse(Call<CurrencyRate> call, Response<CurrencyRate> response) {
                     isLoading.setValue(false);
                     if (response.isSuccessful() && response.body() != null) {
-                        // Сохраняем полученные данные в кэш и базу данных
-                        List<CurrencyRate> currencyRates = response.body();
-                        saveToCache(currencyRates);
-                        saveToDatabase(currencyRates);
+                        // Устанавливаем базовую валюту в полученном объекте
+                        CurrencyRate currencyRate = response.body();
+                        currencyRate.setBaseCurrency(baseCode);
+
+                        // Сохраняем полученные данные в базу данных
+                        saveToDatabase(currencyRate);
+
+                        // Обновляем время последнего обновления
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putLong(PREF_CURRENCY_LAST_UPDATE, System.currentTimeMillis());
+                        editor.apply();
                     } else {
-                        // Если ответ неуспешный, загружаем данные из кэша
-                        errorMessage.setValue("Ошибка получения данных: " + response.message());
-                        loadFromCache();
+                        // Если ответ неуспешный, выводим ошибку
+                        errorMessage.setValue("Ошибка получения данных: " +
+                                (response.errorBody() != null ? response.errorBody().toString() : "Неизвестная ошибка"));
+                        Log.e(TAG, "API error: " + (response.errorBody() != null ? response.errorBody().toString() : "Unknown error"));
                     }
                 }
 
                 @Override
-                public void onFailure(Call<List<CurrencyRate>> call, Throwable t) {
+                public void onFailure(Call<CurrencyRate> call, Throwable t) {
                     isLoading.setValue(false);
                     errorMessage.setValue("Ошибка подключения: " + t.getMessage());
-                    // Загружаем данные из кэша при ошибке
-                    loadFromCache();
+                    Log.e(TAG, "API call failed", t);
                 }
             });
         } else {
@@ -119,54 +148,73 @@ public class CurrencyRepository {
     /**
      * Загружает курсы валют из кэша
      */
-    private void loadFromCache() {
-        String cacheJson = preferences.getString(PREF_CURRENCY_CACHE, null);
-        if (cacheJson != null) {
-            Gson gson = new Gson();
-            Type type = new TypeToken<List<CurrencyRate>>() {}.getType();
-            List<CurrencyRate> cachedRates = gson.fromJson(cacheJson, type);
-            saveToDatabase(cachedRates);
-        }
-    }
+//    private void loadFromCache() {
+//        String cacheJson = preferences.getString(PREF_CURRENCY_CACHE, null);
+//        if (cacheJson != null) {
+//            Gson gson = new Gson();
+//            Type type = new TypeToken<List<CurrencyRate>>() {}.getType();
+//            List<CurrencyRate> cachedRates = gson.fromJson(cacheJson, type);
+//            saveToDatabase(cachedRates);
+//        }
+//    }
 
     /**
      * Сохраняет курсы валют в локальную базу данных
-     * @param currencyRates список курсов валют
+     * @param currencyRate список курсов валют
      */
-    private void saveToDatabase(List<CurrencyRate> currencyRates) {
+    private void saveToDatabase(CurrencyRate currencyRate) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            List<Currency> currencies = new ArrayList<>();
+            try {
+                Map<String, Double> rates = currencyRate.getRates();
+                String baseCurrencyCode = currencyRate.getBaseCurrency();
+                Date currentDate = new Date();
 
-            for (CurrencyRate rate : currencyRates) {
-                Currency currency = new Currency();
-                currency.setCode(rate.getCode());
-                currency.setName(rate.getName());
-                currency.setRate(rate.getRate());
-                currency.setBaseCurrency(rate.getBaseCurrency());
-                currency.setTrend(rate.getTrend());
-                currency.setChange(rate.getChange());
-                currency.setChangePercentage(rate.getChangePercentage());
-                currency.setIconUrl(rate.getIconUrl());
-                currency.setUpdatedAt(DateUtils.parseDate(rate.getDate()));
-                currencies.add(currency);
-            }
+                // Обновляем данные для базовой валюты (курс = 1.0)
+                updateCurrencyInDatabase(baseCurrencyCode, 1.0, "0", 0.0, 0.0, baseCurrencyCode, currentDate);
 
-            // Обновляем или вставляем валюты в базу данных
-            for (Currency currency : currencies) {
-                Currency existingCurrency = currencyDao.getCurrencyByCodeSync(currency.getCode());
-                if (existingCurrency != null) {
-                    currency.setId(existingCurrency.getId());
-                    currencyDao.update(currency);
-                } else {
-                    currencyDao.insert(currency);
+                // Обновляем данные для остальных валют
+                for (Map.Entry<String, Double> entry : rates.entrySet()) {
+                    String code = entry.getKey();
+                    double rate = entry.getValue();
+
+                    // Если базовая валюта, пропускаем (уже обновили выше)
+                    if (code.equals(baseCurrencyCode)) continue;
+
+                    // Получаем существующую валюту для определения изменения курса
+                    Currency existingCurrency = currencyDao.getCurrencyByCodeSync(code, baseCurrencyCode);
+                    String trend = "stable";
+                    double change = 0.0;
+                    double changePercentage = 0.0;
+
+                    if (existingCurrency != null) {
+                        double oldRate = existingCurrency.getRate();
+                        change = rate - oldRate;
+                        if (oldRate != 0) {
+                            changePercentage = (change / oldRate) * 100;
+                        }
+
+                        if (change > 0) {
+                            trend = "up";
+                        } else if (change < 0) {
+                            trend = "down";
+                        }
+                    }
+
+                    // Обновляем валюту в базе данных
+                    updateCurrencyInDatabase(code, rate, trend, change, changePercentage, baseCurrencyCode, currentDate);
                 }
-            }
 
-            // Загружаем обновленные данные
-            List<Currency> updatedCurrencies = currencyDao.getAllCurrenciesSync();
-            allCurrencies.postValue(updatedCurrencies);
-            loadPopularCurrencies();
+                // Загружаем обновленные данные
+                List<Currency> updatedCurrencies = currencyDao.getAllCurrenciesSync();
+                allCurrencies.postValue(updatedCurrencies);
+                loadPopularCurrencies();
+                loadBaseCurrency();
+            } catch (Exception e) {
+                Log.e(TAG, "Error saving currency data to database", e);
+                errorMessage.postValue("Ошибка сохранения данных: " + e.getMessage());
+            }
         });
+
     }
 
     /**
@@ -177,9 +225,9 @@ public class CurrencyRepository {
             List<Currency> popularCurrenciesList = new ArrayList<>();
 
             // Добавляем базовую валюту и популярные валюты в список
-            Currency rubCurrency = currencyDao.getCurrencyByCodeSync("RUB");
-            Currency usdCurrency = currencyDao.getCurrencyByCodeSync("USD");
-            Currency eurCurrency = currencyDao.getCurrencyByCodeSync("EUR");
+            Currency rubCurrency = currencyDao.getCurrencyByCodeSync("RUB", baseCode);
+            Currency usdCurrency = currencyDao.getCurrencyByCodeSync("USD", baseCode);
+            Currency eurCurrency = currencyDao.getCurrencyByCodeSync("EUR", baseCode);
 
             if (rubCurrency != null) popularCurrenciesList.add(rubCurrency);
             if (usdCurrency != null) popularCurrenciesList.add(usdCurrency);
@@ -194,7 +242,7 @@ public class CurrencyRepository {
      */
     private void loadBaseCurrency() {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            Currency currency = currencyDao.getCurrencyByCodeSync("RUB");
+            Currency currency = currencyDao.getCurrencyByCodeSync("RUB", baseCode);
             baseCurrency.postValue(currency);
         });
     }
@@ -207,11 +255,53 @@ public class CurrencyRepository {
     public LiveData<Currency> getCurrencyByCode(String code) {
         MutableLiveData<Currency> result = new MutableLiveData<>();
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            Currency currency = currencyDao.getCurrencyByCodeSync(code);
+            Currency currency = currencyDao.getCurrencyByCodeSync(code, baseCode);
             result.postValue(currency);
         });
         return result;
     }
+
+    private void updateCurrencyInDatabase(String code, double rate, String trend, double change,
+                                          double changePercentage, String baseCurrencyCode, Date updateDate) {
+        Currency currency = currencyDao.getCurrencyByCodeSync(code, baseCode);
+
+        if (currency != null) {
+            // Обновляем существующую валюту
+            currency.setRate(rate);
+            currency.setTrend(trend);
+            currency.setChange(change);
+            currency.setChangePercentage(changePercentage);
+            currency.setBaseCurrency(baseCurrencyCode);
+            currency.setUpdatedAt(updateDate);
+            currencyDao.update(currency);
+        } else {
+            // Создаем новую валюту
+            currency = new Currency();
+            currency.setCode(code);
+            currency.setName(getNameForCurrencyCode(code));
+            currency.setRate(rate);
+            currency.setTrend(trend);
+            currency.setChange(change);
+            currency.setChangePercentage(changePercentage);
+            currency.setBaseCurrency(baseCurrencyCode);
+            currency.setUpdatedAt(updateDate);
+            currency.setIconUrl("ic_currency_" + code.toLowerCase());
+            currencyDao.insert(currency);
+        }
+    }
+
+    private String getNameForCurrencyCode(String code) {
+        switch (code) {
+            case "RUB": return "Российский рубль";
+            case "USD": return "Доллар США";
+            case "EUR": return "Евро";
+            case "JPY": return "Японская йена";
+            case "BYN": return "Белорусский рубль";
+            case "CNY": return "Китайский юань";
+            default: return code;
+        }
+    }
+
 
     // Геттеры LiveData объектов
     public LiveData<List<Currency>> getAllCurrencies() {

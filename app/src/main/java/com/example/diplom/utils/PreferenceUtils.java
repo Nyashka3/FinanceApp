@@ -46,27 +46,39 @@ public class PreferenceUtils {
     public static void setAppLanguage(Context context, String languageCode) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefs.edit().putString(PREF_APP_LANGUAGE, languageCode).apply();
-        updateAppLanguage(context, languageCode);
     }
 
     /**
      * Обновляет язык приложения
      * @param context контекст приложения
      * @param languageCode код языка (например, "ru", "en")
+     * @return обновленный контекст с новой локалью
      */
-    public static void updateAppLanguage(Context context, String languageCode) {
+    public static Context updateAppLanguage(Context context, String languageCode) {
         Locale locale = new Locale(languageCode);
         Locale.setDefault(locale);
 
         Resources resources = context.getResources();
-        Configuration configuration = resources.getConfiguration();
-        configuration.setLocale(locale);
+        Configuration configuration = new Configuration(resources.getConfiguration());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            context = context.createConfigurationContext(configuration);
+            configuration.setLocale(locale);
+            return context.createConfigurationContext(configuration);
         } else {
+            configuration.locale = locale;
             resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+            return context;
         }
+    }
+
+    /**
+     * Применяет сохраненный язык к активности
+     * @param context контекст приложения
+     * @return обновленный контекст с локалью из настроек
+     */
+    public static Context applyPreferredLanguage(Context context) {
+        String language = getAppLanguage(context);
+        return updateAppLanguage(context, language);
     }
 
     /**

@@ -6,6 +6,8 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.Query;
 
 /**
@@ -18,8 +20,11 @@ public interface CurrencyApiService {
      * Получение текущих курсов валют
      * @return список текущих курсов валют
      */
-    @GET("currency/rates")
-    Call<List<CurrencyRate>> getCurrentRates();
+    @GET("v1/latest")
+    Call<CurrencyRate> getCurrentRates(
+            @Query("currencies") String currencies,
+            @Query("base_currency") String baseCurrency
+    );
 
     /**
      * Получение исторических курсов валют

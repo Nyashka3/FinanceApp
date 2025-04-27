@@ -73,7 +73,7 @@ public class TaxViewModel extends AndroidViewModel {
             calendar.setTime(date);
             calendar.add(Calendar.MONTH, 3); // налоги на ближайшие 3 месяца
             Date endDate = calendar.getTime();
-            return taxDao.getUpcomingTaxes(date, endDate);
+            return taxDao.getUpcomingTaxes(date);
         });
 
         // Расчет общей суммы налогов за текущий период

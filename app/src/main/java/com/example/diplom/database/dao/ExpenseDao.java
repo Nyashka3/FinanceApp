@@ -2,11 +2,7 @@ package com.example.diplom.database.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Update;
-import androidx.room.Transaction;
 
 import com.example.diplom.database.entities.Expense;
 
@@ -14,16 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @Dao
-public interface ExpenseDao {
-    @Insert
-    long insert(Expense expense);
-
-    @Update
-    void update(Expense expense);
-
-    @Delete
-    void delete(Expense expense);
-
+public interface ExpenseDao extends BaseDao<Expense> {
     @Query("SELECT * FROM expenses WHERE id = :id")
     LiveData<Expense> getExpenseById(int id);
 

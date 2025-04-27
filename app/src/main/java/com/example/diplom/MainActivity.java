@@ -7,7 +7,6 @@ import android.view.MenuItem;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.diplom.analytics.AnalyticsActivity;
 import com.example.diplom.currency.CurrencyActivity;
@@ -21,10 +20,7 @@ import com.google.android.material.snackbar.Snackbar;
 /**
  * Главная активность приложения
  */
-/**
- * Главная активность приложения
- */
-public class MainActivity extends AppCompatActivity implements ExitDialogFragment.ExitDialogListener {
+public class MainActivity extends BaseLocaleActivity implements ExitDialogFragment.ExitDialogListener {
 
     private ActivityMainBinding binding;
 

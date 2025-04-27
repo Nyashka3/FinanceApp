@@ -2,6 +2,7 @@ package com.example.diplom.utils;
 
 import android.text.format.DateFormat;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -105,5 +106,36 @@ public class DateUtils {
     public static long getDaysBetween(Date startDate, Date endDate) {
         long diffInMillies = Math.abs(endDate.getTime() - startDate.getTime());
         return TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Преобразует строку с датой в объект Date
+     * @param dateStr строка с датой в формате "yyyy-MM-dd" или "yyyy-MM-dd'T'HH:mm:ss"
+     * @return объект Date или null, если преобразование не удалось
+     */
+    public static Date parseDate(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty()) {
+            return null;
+        }
+
+        // Пробуем разные форматы даты
+        SimpleDateFormat[] dateFormats = {
+                new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()),
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()),
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()),
+                new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()),
+                new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        };
+
+        for (SimpleDateFormat format : dateFormats) {
+            try {
+                return format.parse(dateStr);
+            } catch (ParseException e) {
+                // Пропускаем и пробуем следующий формат
+            }
+        }
+
+        // Если ни один формат не подошел, возвращаем текущую дату
+        return new Date();
     }
 }

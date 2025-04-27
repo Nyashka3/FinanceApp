@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.diplom.R;
+import com.example.diplom.database.entities.Category;
 import com.example.diplom.database.entities.Expense;
 import com.example.diplom.databinding.ActivityExpensesBinding;
 import com.example.diplom.expenses.adapters.ExpenseAdapter;

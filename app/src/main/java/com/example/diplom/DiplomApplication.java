@@ -10,8 +10,6 @@ import com.example.diplom.utils.NotificationUtils;
 import com.example.diplom.utils.PreferenceUtils;
 import com.google.android.material.color.DynamicColors;
 
-import java.util.Locale;
-
 /**
  * Класс приложения, который инициализирует глобальные настройки.
  */
@@ -24,22 +22,11 @@ public class DiplomApplication extends Application {
         // Инициализация канала уведомлений
         NotificationUtils.createNotificationChannel(this);
 
-        // Применение сохраненного языка
-        applyAppLanguage();
-
         // Применение сохраненной темы
         applyAppTheme();
 
         // Применение динамических цветов, если включено
         applyDynamicColors();
-    }
-
-    /**
-     * Применяет сохраненный язык приложения
-     */
-    private void applyAppLanguage() {
-        String languageCode = PreferenceUtils.getAppLanguage(this);
-        PreferenceUtils.updateAppLanguage(this, languageCode);
     }
 
     /**
@@ -60,27 +47,24 @@ public class DiplomApplication extends Application {
         }
     }
 
+    /**
+     * Этот метод вызывается перед любым другим методом при создании экземпляра.
+     * Мы переопределяем его, чтобы применить настройки языка до создания контекста.
+     */
     @Override
     protected void attachBaseContext(Context base) {
-        // Применение языка при создании контекста
-        String languageCode = PreferenceUtils.getAppLanguage(base);
-        Context localizedContext = updateBaseContextLocale(base, languageCode);
-        super.attachBaseContext(localizedContext);
+        // Применение языка к базовому контексту
+        Context context = PreferenceUtils.applyPreferredLanguage(base);
+        super.attachBaseContext(context);
     }
 
     /**
-     * Обновляет локаль базового контекста
-     * @param context исходный контекст
-     * @param languageCode код языка
-     * @return контекст с новой локалью
+     * Вызывается при изменении конфигурации устройства, включая изменение языка.
      */
-    private Context updateBaseContextLocale(Context context, String languageCode) {
-        Locale locale = new Locale(languageCode);
-        Locale.setDefault(locale);
-
-        Configuration config = context.getResources().getConfiguration();
-        config.setLocale(locale);
-
-        return context.createConfigurationContext(config);
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Пересоздаем конфигурацию с нашими настройками
+        PreferenceUtils.applyPreferredLanguage(this);
     }
 }

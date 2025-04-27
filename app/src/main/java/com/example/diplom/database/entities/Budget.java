@@ -14,7 +14,7 @@ import java.util.Date;
 @Entity(tableName = "budgets")
 public class Budget {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private int id = 0;
 
     private String name;
 

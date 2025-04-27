@@ -11,6 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.diplom.database.dao.BudgetDao;
 import com.example.diplom.database.dao.CategoryDao;
+import com.example.diplom.database.dao.CurrencyDao;
 import com.example.diplom.database.dao.ExpenseDao;
 import com.example.diplom.database.dao.IncomeDao;
 import com.example.diplom.database.dao.TaxDao;
@@ -45,6 +46,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract ExpenseDao expenseDao();
     public abstract IncomeDao incomeDao();
     public abstract TaxDao taxDao();
+    public abstract CurrencyDao currencyDao();
 
     public static AppDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
@@ -78,6 +80,14 @@ public abstract class AppDatabase extends RoomDatabase {
     };
 
     private static void populateInitialData(AppDatabase database) {
+        // Создаем начальные категории
+        populateCategories(database);
+
+        // Создаем начальные валюты
+        populateCurrencies(database);
+    }
+
+    private static void populateCategories(AppDatabase database) {
         CategoryDao categoryDao = database.categoryDao();
 
         // Создание категорий расходов
@@ -145,5 +155,90 @@ public abstract class AppDatabase extends RoomDatabase {
         investmentsCat.setColor("#3498db");
         investmentsCat.setCreatedAt(new Date());
         categoryDao.insert(investmentsCat);
+    }
+
+    private static void populateCurrencies(AppDatabase database) {
+        CurrencyDao currencyDao = database.currencyDao();
+        Date currentDate = new Date();
+
+        // Создание начальных валют
+
+        // 1. Российский рубль (RUB)
+        Currency rub = new Currency();
+        rub.setCode("RUB");
+        rub.setName("Российский рубль");
+        rub.setRate(1.0); // Базовая валюта
+        rub.setBaseCurrency("RUB");
+        rub.setTrend("stable");
+        rub.setChange(0.0);
+        rub.setChangePercentage(0.0);
+        rub.setIconUrl("ic_currency_rub");
+        rub.setUpdatedAt(currentDate);
+        currencyDao.insert(rub);
+
+        // 2. Доллар США (USD)
+        Currency usd = new Currency();
+        usd.setCode("USD");
+        usd.setName("Доллар США");
+        usd.setRate(0.0120613518); // Примерный курс
+        usd.setBaseCurrency("RUB");
+        usd.setTrend("stable");
+        usd.setChange(0.0);
+        usd.setChangePercentage(0.0);
+        usd.setIconUrl("ic_currency_usd");
+        usd.setUpdatedAt(currentDate);
+        currencyDao.insert(usd);
+
+        // 3. Евро (EUR)
+        Currency eur = new Currency();
+        eur.setCode("EUR");
+        eur.setName("Евро");
+        eur.setRate(0.0106083224); // Примерный курс
+        eur.setBaseCurrency("RUB");
+        eur.setTrend("stable");
+        eur.setChange(0.0);
+        eur.setChangePercentage(0.0);
+        eur.setIconUrl("ic_currency_eur");
+        eur.setUpdatedAt(currentDate);
+        currencyDao.insert(eur);
+
+        // 4. Японская йена (JPY)
+        Currency jpy = new Currency();
+        jpy.setCode("JPY");
+        jpy.setName("Японская йена");
+        jpy.setRate(1.7327729226); // Примерный курс
+        jpy.setBaseCurrency("RUB");
+        jpy.setTrend("stable");
+        jpy.setChange(0.0);
+        jpy.setChangePercentage(0.0);
+        jpy.setIconUrl("ic_currency_jpy");
+        jpy.setUpdatedAt(currentDate);
+        currencyDao.insert(jpy);
+
+        // 5. Белорусский рубль (BYN)
+        Currency byn = new Currency();
+        byn.setCode("BYN");
+        byn.setName("Белорусский рубль");
+        byn.setRate(0.033); // Примерный курс
+        byn.setBaseCurrency("RUB");
+        byn.setTrend("stable");
+        byn.setChange(0.0);
+        byn.setChangePercentage(0.0);
+        byn.setIconUrl("ic_currency_byn");
+        byn.setUpdatedAt(currentDate);
+        currencyDao.insert(byn);
+
+        // 6. Китайский юань (CNY)
+        Currency cny = new Currency();
+        cny.setCode("CNY");
+        cny.setName("Китайский юань");
+        cny.setRate(0.085); // Примерный курс
+        cny.setBaseCurrency("RUB");
+        cny.setTrend("stable");
+        cny.setChange(0.0);
+        cny.setChangePercentage(0.0);
+        cny.setIconUrl("ic_currency_cny");
+        cny.setUpdatedAt(currentDate);
+        currencyDao.insert(cny);
     }
 }
