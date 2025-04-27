@@ -11,7 +11,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
     private static final String BASE_URL = "https://api.example.com/v1/"; // Базовый URL для API
     private static final String CURRENCY_BASE_URL = "https://api.freecurrencyapi.com/"; // Базовый URL для API валют
-    public static final String SUPPORTED_CURRENCIES = "EUR,USD,JPY,BYN,CNY";
+    public static final String SUPPORTED_CURRENCIES = "EUR,USD,JPY,CNY,CZK";
+    public static final String API_KEY = "fca_live_BPwqxb36ONW52WvZNI7bTVIEIiQTBrPcFcI8aBow";
 
     private static Retrofit retrofit = null;
     private static Retrofit currencyRetrofit = null;
@@ -54,13 +55,8 @@ public class ApiClient {
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             httpClient.addInterceptor(logging);
 
-            var client = new OkHttpClient.Builder()
-                    .addInterceptor(new MyInterceptor())
-                    .build();
-
             currencyRetrofit = new Retrofit.Builder()
                     .baseUrl(CURRENCY_BASE_URL)
-                    .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(httpClient.build())
                     .build();

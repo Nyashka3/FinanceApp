@@ -22,10 +22,10 @@ public interface CurrencyApiService {
      */
     @GET("v1/latest")
     Call<CurrencyRate> getCurrentRates(
+            @Query("apikey") String apiKey,
             @Query("currencies") String currencies,
             @Query("base_currency") String baseCurrency
     );
-
     /**
      * Получение исторических курсов валют
      * @param days количество дней истории

@@ -38,7 +38,7 @@ public class CurrencyRepository {
     private static final String TAG = CurrencyRepository.class.getSimpleName();
     private static final String PREF_CURRENCY_CACHE = "currency_cache";
     private static final String PREF_CURRENCY_LAST_UPDATE = "currency_last_update";
-    private static final long CURRENCY_CACHE_EXPIRATION = 3600000; // 1 час
+    private static final long CURRENCY_CACHE_EXPIRATION = 3600000; // 1 min
 
     private final Context context;
 
@@ -50,7 +50,7 @@ public class CurrencyRepository {
     private final MutableLiveData<Currency> baseCurrency = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
-    private String baseCode = "RUB";
+    private String baseCode;
 
     public CurrencyRepository(Context context) {
         AppDatabase database = AppDatabase.getDatabase(context);
@@ -63,7 +63,7 @@ public class CurrencyRepository {
 
         // Загрузка данных из локальной базы данных
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            List<Currency> currencies = currencyDao.getAllCurrenciesSync();
+            List<Currency> currencies = currencyDao.getAllCurrenciesByBaseSync(baseCode);
 
             //currencies.sort(Comparator.comparing(Currency::getCode).reversed()); через например клик листенер
 
@@ -90,6 +90,7 @@ public class CurrencyRepository {
 
 
             apiService.getCurrentRates(
+                    ApiClient.API_KEY,
                     ApiClient.SUPPORTED_CURRENCIES,
                     baseCode
             ).enqueue(new Callback<>() {
@@ -126,7 +127,7 @@ public class CurrencyRepository {
         } else {
             // Данные свежие, загружаем из базы данных
             AppDatabase.databaseWriteExecutor.execute(() -> {
-                List<Currency> currencies = currencyDao.getAllCurrenciesSync();
+                List<Currency> currencies = currencyDao.getAllCurrenciesByBaseSync(baseCode);
                 allCurrencies.postValue(currencies);
                 loadPopularCurrencies();
             });
@@ -205,7 +206,7 @@ public class CurrencyRepository {
                 }
 
                 // Загружаем обновленные данные
-                List<Currency> updatedCurrencies = currencyDao.getAllCurrenciesSync();
+                List<Currency> updatedCurrencies = currencyDao.getAllCurrenciesByBaseSync(baseCurrencyCode);
                 allCurrencies.postValue(updatedCurrencies);
                 loadPopularCurrencies();
                 loadBaseCurrency();
