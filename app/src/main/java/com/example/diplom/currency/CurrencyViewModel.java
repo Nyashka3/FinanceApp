@@ -13,12 +13,22 @@ import com.example.diplom.database.entities.Currency;
 import com.example.diplom.repository.CurrencyRepository;
 import com.example.diplom.utils.PreferenceUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * ViewModel для работы с валютами
  */
 public class CurrencyViewModel extends AndroidViewModel {
+
+    // Константы для сортировки
+    public static final int SORT_CODE_ASC = 0;
+    public static final int SORT_CODE_DESC = 1;
+    public static final int SORT_RATE_ASC = 2;
+    public static final int SORT_RATE_DESC = 3;
 
     private final CurrencyRepository repository;
     private final LiveData<List<Currency>> allCurrencies;
@@ -28,6 +38,11 @@ public class CurrencyViewModel extends AndroidViewModel {
     private final LiveData<String> errorMessage;
 
     private final MutableLiveData<String> searchQuery = new MutableLiveData<>("");
+    private final MutableLiveData<Integer> sortOrder = new MutableLiveData<>(SORT_CODE_ASC);
+    private final MutableLiveData<Double> minRate = new MutableLiveData<>(null);
+    private final MutableLiveData<Double> maxRate = new MutableLiveData<>(null);
+    private final MutableLiveData<String> codeFilter = new MutableLiveData<>("");
+
     private final MediatorLiveData<List<Currency>> filteredCurrencies = new MediatorLiveData<>();
 
     public CurrencyViewModel(@NonNull Application application) {
@@ -43,13 +58,29 @@ public class CurrencyViewModel extends AndroidViewModel {
         isLoading = repository.getIsLoading();
         errorMessage = repository.getErrorMessage();
 
-        // Настройка фильтрации по поисковому запросу
+        // Настройка фильтрации по поисковому запросу и другим фильтрам
         filteredCurrencies.addSource(allCurrencies, currencies -> {
-            filterCurrencies(searchQuery.getValue(), currencies);
+            applyFiltersAndSort();
         });
 
         filteredCurrencies.addSource(searchQuery, query -> {
-            filterCurrencies(query, allCurrencies.getValue());
+            applyFiltersAndSort();
+        });
+
+        filteredCurrencies.addSource(sortOrder, order -> {
+            applyFiltersAndSort();
+        });
+
+        filteredCurrencies.addSource(minRate, min -> {
+            applyFiltersAndSort();
+        });
+
+        filteredCurrencies.addSource(maxRate, max -> {
+            applyFiltersAndSort();
+        });
+
+        filteredCurrencies.addSource(codeFilter, code -> {
+            applyFiltersAndSort();
         });
 
         // Обновление данных при создании ViewModel
@@ -57,26 +88,71 @@ public class CurrencyViewModel extends AndroidViewModel {
     }
 
     /**
-     * Фильтрует список валют по поисковому запросу
-     * @param query поисковый запрос
-     * @param currencies исходный список валют
+     * Применяет фильтры и сортировку к списку валют
      */
-    private void filterCurrencies(String query, List<Currency> currencies) {
+    private void applyFiltersAndSort() {
+        List<Currency> currencies = allCurrencies.getValue();
         if (currencies == null) return;
 
-        if (query == null || query.isEmpty()) {
-            filteredCurrencies.setValue(currencies);
-            return;
+        List<Currency> result = new ArrayList<>(currencies);
+
+        // Применение фильтра по коду
+        String code = codeFilter.getValue();
+        if (code != null && !code.isEmpty()) {
+            String lowerCode = code.toLowerCase();
+            result = result.stream()
+                    .filter(currency ->
+                            currency.getCode().toLowerCase().contains(lowerCode))
+                    .collect(Collectors.toList());
         }
 
-        // Фильтрация списка валют по коду или названию
-        List<Currency> filtered = currencies.stream()
-                .filter(currency ->
-                        currency.getCode().toLowerCase().contains(query.toLowerCase()) ||
-                                currency.getName().toLowerCase().contains(query.toLowerCase()))
-                .collect(java.util.stream.Collectors.toList());
+        // Применение фильтра по диапазону курса
+        Double min = minRate.getValue();
+        Double max = maxRate.getValue();
 
-        filteredCurrencies.setValue(filtered);
+        if (min != null) {
+            result = result.stream()
+                    .filter(currency -> currency.getRate() >= min)
+                    .collect(Collectors.toList());
+        }
+
+        if (max != null) {
+            result = result.stream()
+                    .filter(currency -> currency.getRate() <= max)
+                    .collect(Collectors.toList());
+        }
+
+        // Применение поискового фильтра
+        String query = searchQuery.getValue();
+        if (query != null && !query.isEmpty()) {
+            String lowerQuery = query.toLowerCase();
+            result = result.stream()
+                    .filter(currency ->
+                            currency.getCode().toLowerCase().contains(lowerQuery) ||
+                                    currency.getName().toLowerCase().contains(lowerQuery))
+                    .collect(Collectors.toList());
+        }
+
+        // Применение сортировки
+        Integer order = sortOrder.getValue();
+        if (order != null) {
+            switch (order) {
+                case SORT_CODE_ASC:
+                    Collections.sort(result, Comparator.comparing(Currency::getCode));
+                    break;
+                case SORT_CODE_DESC:
+                    Collections.sort(result, Comparator.comparing(Currency::getCode).reversed());
+                    break;
+                case SORT_RATE_ASC:
+                    Collections.sort(result, Comparator.comparing(Currency::getRate));
+                    break;
+                case SORT_RATE_DESC:
+                    Collections.sort(result, Comparator.comparing(Currency::getRate).reversed());
+                    break;
+            }
+        }
+
+        filteredCurrencies.setValue(result);
     }
 
     /**
@@ -92,6 +168,49 @@ public class CurrencyViewModel extends AndroidViewModel {
      */
     public void setSearchQuery(String query) {
         searchQuery.setValue(query);
+    }
+
+    /**
+     * Устанавливает фильтр по коду валюты
+     * @param code код валюты для фильтрации
+     */
+    public void setCodeFilter(String code) {
+        codeFilter.setValue(code);
+    }
+
+    /**
+     * Устанавливает минимальное значение курса для фильтрации
+     * @param min минимальное значение
+     */
+    public void setMinRate(Double min) {
+        minRate.setValue(min);
+    }
+
+    /**
+     * Устанавливает максимальное значение курса для фильтрации
+     * @param max максимальное значение
+     */
+    public void setMaxRate(Double max) {
+        maxRate.setValue(max);
+    }
+
+    /**
+     * Устанавливает порядок сортировки
+     * @param order порядок сортировки
+     */
+    public void setSortOrder(int order) {
+        sortOrder.setValue(order);
+    }
+
+    /**
+     * Сбрасывает все фильтры
+     */
+    public void resetFilters() {
+        codeFilter.setValue("");
+        minRate.setValue(null);
+        maxRate.setValue(null);
+        searchQuery.setValue("");
+        sortOrder.setValue(SORT_CODE_ASC);
     }
 
     /**
@@ -152,5 +271,21 @@ public class CurrencyViewModel extends AndroidViewModel {
 
     public LiveData<String> getSearchQuery() {
         return searchQuery;
+    }
+
+    public LiveData<Integer> getSortOrder() {
+        return sortOrder;
+    }
+
+    public LiveData<Double> getMinRate() {
+        return minRate;
+    }
+
+    public LiveData<Double> getMaxRate() {
+        return maxRate;
+    }
+
+    public LiveData<String> getCodeFilter() {
+        return codeFilter;
     }
 }

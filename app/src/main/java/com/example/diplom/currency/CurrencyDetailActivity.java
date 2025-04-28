@@ -2,10 +2,10 @@ package com.example.diplom.currency;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +16,7 @@ import com.example.diplom.R;
 import com.example.diplom.database.entities.Currency;
 import com.example.diplom.databinding.ActivityCurrencyDetailBinding;
 import com.example.diplom.utils.DateUtils;
+import com.example.diplom.utils.PreferenceUtils;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.NumberFormat;
@@ -201,11 +202,14 @@ public class CurrencyDetailActivity extends AppCompatActivity {
         binding.currencyPercentText.setText(percentFormat.format(currency.getChangePercentage() / 100));
 
         // Отображение базовой валюты
-        binding.baseCurrencyText.setText(getString(R.string.base_currency, currency.getBaseCurrency()));
+        binding.baseCurrencyText.setText(getString(R.string.base_currency) + currency.getBaseCurrency());
 
         // Отображение даты обновления
         if (currency.getUpdatedAt() != null) {
-            binding.lastUpdatedText.setText(getString(R.string.last_updated, DateUtils.formatDateTime(currency.getUpdatedAt())));
+            // TODO : Разобраться почему нету перевода на русский
+            Log.e("Print", "Print: " + getString(R.string.last_updated));
+            Log.e("Context", "Print: " + PreferenceUtils.getAppLanguage(getApplicationContext()));
+            binding.lastUpdatedText.setText(getString(R.string.last_updated) + DateUtils.formatDateTime(currency.getUpdatedAt()));
         }
     }
 

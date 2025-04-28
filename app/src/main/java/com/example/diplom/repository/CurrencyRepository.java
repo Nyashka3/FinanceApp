@@ -38,7 +38,7 @@ public class CurrencyRepository {
     private static final String TAG = CurrencyRepository.class.getSimpleName();
     private static final String PREF_CURRENCY_CACHE = "currency_cache";
     private static final String PREF_CURRENCY_LAST_UPDATE = "currency_last_update";
-    private static final long CURRENCY_CACHE_EXPIRATION = 3600000; // 1 min
+    private static final long CURRENCY_CACHE_EXPIRATION = 60000; // 1 min
 
     private final Context context;
 
@@ -50,7 +50,7 @@ public class CurrencyRepository {
     private final MutableLiveData<Currency> baseCurrency = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
-    private String baseCode;
+    // String baseCode;
 
     public CurrencyRepository(Context context) {
         AppDatabase database = AppDatabase.getDatabase(context);
@@ -58,12 +58,12 @@ public class CurrencyRepository {
         apiService = ApiClient.getCurrencyApiService();
         preferences = context.getSharedPreferences("currency_prefs", Context.MODE_PRIVATE);
 
-        String language = PreferenceUtils.getAppLanguage(context);
-        baseCode = language.equals("en") ? "USD" : "RUB";
+//        String language = PreferenceUtils.getAppLanguage(context);
+//        baseCode = language.equals("en") ? "USD" : "RUB";
 
         // Загрузка данных из локальной базы данных
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            List<Currency> currencies = currencyDao.getAllCurrenciesByBaseSync(baseCode);
+            List<Currency> currencies = currencyDao.getAllCurrenciesByBaseSync(PreferenceUtils.getCurrency(context));
 
             //currencies.sort(Comparator.comparing(Currency::getCode).reversed()); через например клик листенер
 
@@ -85,14 +85,14 @@ public class CurrencyRepository {
         if (currentTime - lastUpdate > CURRENCY_CACHE_EXPIRATION) {
             isLoading.setValue(true);
 
-            String language = PreferenceUtils.getAppLanguage(context);
-            baseCode = language.equals("en") ? "USD" : "RUB";
+//            String language = PreferenceUtils.getAppLanguage(context);
+//            baseCode = language.equals("en") ? "USD" : "RUB";
 
 
             apiService.getCurrentRates(
                     ApiClient.API_KEY,
                     ApiClient.SUPPORTED_CURRENCIES,
-                    baseCode
+                    PreferenceUtils.getCurrency(context)
             ).enqueue(new Callback<>() {
                 @Override
                 public void onResponse(Call<CurrencyRate> call, Response<CurrencyRate> response) {
@@ -100,7 +100,7 @@ public class CurrencyRepository {
                     if (response.isSuccessful() && response.body() != null) {
                         // Устанавливаем базовую валюту в полученном объекте
                         CurrencyRate currencyRate = response.body();
-                        currencyRate.setBaseCurrency(baseCode);
+                        currencyRate.setBaseCurrency(PreferenceUtils.getCurrency(context));
 
                         // Сохраняем полученные данные в базу данных
                         saveToDatabase(currencyRate);
@@ -127,7 +127,7 @@ public class CurrencyRepository {
         } else {
             // Данные свежие, загружаем из базы данных
             AppDatabase.databaseWriteExecutor.execute(() -> {
-                List<Currency> currencies = currencyDao.getAllCurrenciesByBaseSync(baseCode);
+                List<Currency> currencies = currencyDao.getAllCurrenciesByBaseSync(PreferenceUtils.getCurrency(context));
                 allCurrencies.postValue(currencies);
                 loadPopularCurrencies();
             });
@@ -226,9 +226,9 @@ public class CurrencyRepository {
             List<Currency> popularCurrenciesList = new ArrayList<>();
 
             // Добавляем базовую валюту и популярные валюты в список
-            Currency rubCurrency = currencyDao.getCurrencyByCodeSync("RUB", baseCode);
-            Currency usdCurrency = currencyDao.getCurrencyByCodeSync("USD", baseCode);
-            Currency eurCurrency = currencyDao.getCurrencyByCodeSync("EUR", baseCode);
+            Currency rubCurrency = currencyDao.getCurrencyByCodeSync("RUB", PreferenceUtils.getCurrency(context));
+            Currency usdCurrency = currencyDao.getCurrencyByCodeSync("USD", PreferenceUtils.getCurrency(context));
+            Currency eurCurrency = currencyDao.getCurrencyByCodeSync("EUR", PreferenceUtils.getCurrency(context));
 
             if (rubCurrency != null) popularCurrenciesList.add(rubCurrency);
             if (usdCurrency != null) popularCurrenciesList.add(usdCurrency);
@@ -243,7 +243,7 @@ public class CurrencyRepository {
      */
     private void loadBaseCurrency() {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            Currency currency = currencyDao.getCurrencyByCodeSync("RUB", baseCode);
+            Currency currency = currencyDao.getCurrencyByCodeSync("RUB", PreferenceUtils.getCurrency(context));
             baseCurrency.postValue(currency);
         });
     }
@@ -256,7 +256,7 @@ public class CurrencyRepository {
     public LiveData<Currency> getCurrencyByCode(String code) {
         MutableLiveData<Currency> result = new MutableLiveData<>();
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            Currency currency = currencyDao.getCurrencyByCodeSync(code, baseCode);
+            Currency currency = currencyDao.getCurrencyByCodeSync(code, PreferenceUtils.getCurrency(context));
             result.postValue(currency);
         });
         return result;
@@ -264,7 +264,7 @@ public class CurrencyRepository {
 
     private void updateCurrencyInDatabase(String code, double rate, String trend, double change,
                                           double changePercentage, String baseCurrencyCode, Date updateDate) {
-        Currency currency = currencyDao.getCurrencyByCodeSync(code, baseCode);
+        Currency currency = currencyDao.getCurrencyByCodeSync(code, PreferenceUtils.getCurrency(context));
 
         if (currency != null) {
             // Обновляем существующую валюту

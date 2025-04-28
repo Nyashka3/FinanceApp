@@ -248,6 +248,7 @@ public class TaxDetailActivity extends AppCompatActivity {
         }
 
         // Заполнение данных налога
+        tax.setId(taxId);
         tax.setName(binding.taxNameEditText.getText().toString().trim());
         tax.setAmount(amount);
         tax.setType(binding.taxTypeSpinner.getSelectedItem().toString());
@@ -282,12 +283,13 @@ public class TaxDetailActivity extends AppCompatActivity {
                 .setTitle(R.string.delete)
                 .setMessage(R.string.confirm_delete_tax)
                 .setPositiveButton(R.string.delete, (dialog, which) -> {
-                    Tax tax = viewModel.getTaxById(taxId).getValue();
-                    if (tax != null) {
-                        viewModel.delete(tax);
-                        Toast.makeText(this, R.string.tax_deleted, Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
+                    viewModel.getTaxById(taxId).observe(this, tax -> {
+                        if (tax != null) {
+                            viewModel.delete(tax);
+                            Toast.makeText(this, R.string.tax_deleted, Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    });
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .show();

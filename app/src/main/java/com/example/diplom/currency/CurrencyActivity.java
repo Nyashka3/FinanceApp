@@ -15,18 +15,28 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.diplom.R;
 import com.example.diplom.currency.adapters.CurrencyAdapter;
+import com.example.diplom.currency.CurrencyFilterDialogFragment;
+import com.example.diplom.currency.CurrencySortDialogFragment;
 import com.example.diplom.database.entities.Currency;
 import com.example.diplom.databinding.ActivityCurrencyBinding;
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.badge.BadgeUtils;
 import com.google.android.material.snackbar.Snackbar;
 
 /**
  * Активность для отображения списка валют и их курсов
  */
-public class CurrencyActivity extends AppCompatActivity implements CurrencyAdapter.OnCurrencyClickListener {
+public class CurrencyActivity extends AppCompatActivity implements
+        CurrencyAdapter.OnCurrencyClickListener,
+        CurrencyFilterDialogFragment.FilterDialogListener,
+        CurrencySortDialogFragment.SortDialogListener {
 
     private ActivityCurrencyBinding binding;
     private CurrencyViewModel viewModel;
     private CurrencyAdapter adapter;
+    private MenuItem filterMenuItem;
+    private BadgeDrawable filterBadge;
+    private boolean isFilterActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,11 +127,54 @@ public class CurrencyActivity extends AppCompatActivity implements CurrencyAdapt
                 Snackbar.make(binding.getRoot(), errorMessage, Snackbar.LENGTH_LONG).show();
             }
         });
+
+        // Наблюдение за фильтрами для обновления значка
+        viewModel.getCodeFilter().observe(this, codeFilter -> {
+            updateFilterBadge();
+        });
+
+        viewModel.getMinRate().observe(this, minRate -> {
+            updateFilterBadge();
+        });
+
+        viewModel.getMaxRate().observe(this, maxRate -> {
+            updateFilterBadge();
+        });
+    }
+
+    /**
+     * Обновляет значок фильтра в зависимости от активности фильтров
+     */
+    private void updateFilterBadge() {
+        String codeFilter = viewModel.getCodeFilter().getValue();
+        Double minRate = viewModel.getMinRate().getValue();
+        Double maxRate = viewModel.getMaxRate().getValue();
+
+        boolean hasActiveFilters = (codeFilter != null && !codeFilter.isEmpty()) ||
+                minRate != null || maxRate != null;
+
+        // Если состояние фильтра изменилось и меню уже создано
+        if (hasActiveFilters != isFilterActive && filterMenuItem != null) {
+            if (hasActiveFilters) {
+                // Добавляем значок, что фильтры активны
+                filterMenuItem.setIcon(R.drawable.ic_trend_up);
+            } else {
+                // Возвращаем обычный значок
+                filterMenuItem.setIcon(R.drawable.ic_trend_down);
+            }
+            isFilterActive = hasActiveFilters;
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_currency, menu);
+
+        // Сохраняем ссылку на пункт меню фильтра
+        filterMenuItem = menu.findItem(R.id.action_filter);
+
+        // Обновляем значок фильтра при создании меню
+        updateFilterBadge();
 
         // Настройка поиска
         MenuItem searchItem = menu.findItem(R.id.action_search);
@@ -155,9 +208,37 @@ public class CurrencyActivity extends AppCompatActivity implements CurrencyAdapt
         } else if (id == R.id.action_refresh) {
             viewModel.refreshCurrencyRates();
             return true;
+        } else if (id == R.id.action_filter) {
+            showFilterDialog();
+            return true;
+        } else if (id == R.id.action_sort) {
+            showSortDialog();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Показывает диалог фильтрации валют
+     */
+    private void showFilterDialog() {
+        CurrencyFilterDialogFragment dialog = CurrencyFilterDialogFragment.newInstance(
+                viewModel.getCodeFilter().getValue(),
+                viewModel.getMinRate().getValue(),
+                viewModel.getMaxRate().getValue()
+        );
+        dialog.show(getSupportFragmentManager(), "CurrencyFilterDialog");
+    }
+
+    /**
+     * Показывает диалог сортировки валют
+     */
+    private void showSortDialog() {
+        CurrencySortDialogFragment dialog = CurrencySortDialogFragment.newInstance(
+                viewModel.getSortOrder().getValue()
+        );
+        dialog.show(getSupportFragmentManager(), "CurrencySortDialog");
     }
 
     @Override
@@ -166,6 +247,38 @@ public class CurrencyActivity extends AppCompatActivity implements CurrencyAdapt
         Intent intent = new Intent(this, CurrencyDetailActivity.class);
         intent.putExtra(CurrencyDetailActivity.EXTRA_CURRENCY_CODE, currency.getCode());
         startActivity(intent);
+    }
+
+    /**
+     * Обработка результата диалога фильтрации
+     */
+    @Override
+    public void onFilterApplied(String codeFilter, Double minRate, Double maxRate) {
+        viewModel.setCodeFilter(codeFilter);
+        viewModel.setMinRate(minRate);
+        viewModel.setMaxRate(maxRate);
+
+        // Показываем сообщение, что фильтры применены
+        if ((codeFilter != null && !codeFilter.isEmpty()) || minRate != null || maxRate != null) {
+            Snackbar.make(binding.getRoot(), R.string.filters_active, Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Обработка сброса фильтров
+     */
+    @Override
+    public void onFilterReset() {
+        viewModel.resetFilters();
+        Snackbar.make(binding.getRoot(), R.string.filters_reset, Snackbar.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Обработка выбора способа сортировки
+     */
+    @Override
+    public void onSortOrderSelected(int sortOrder) {
+        viewModel.setSortOrder(sortOrder);
     }
 
     @Override

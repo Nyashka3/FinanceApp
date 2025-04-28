@@ -119,8 +119,8 @@
     <string name="result">Результат</string>
     <string name="currency_rate">Курс</string>
     <string name="currency_change">Изменение</string>
-    <string name="last_updated">Последнее обновление: %s</string>
-    <string name="base_currency">Базовая валюта: %s</string>
+    <string name="last_updated">Последнее обновление</string>
+    <string name="base_currency">Базовая валюта</string>
 
     <!-- Строки для настроек -->
     <string name="settings_title">Настройки</string>
@@ -191,5 +191,23 @@
     <string name="tax_history">История налоговых ставок</string>
 
     <string name="adapterView_OnItemSelectedListener_null">AdapterView.OnItemSelectedListener не может быть null</string>
+
+    <string name="filter">Фильтр</string>
+    <string name="sort">Сортировка</string>
+    <string name="filter_currencies">Фильтр валют</string>
+    <string name="apply">Применить</string>
+    <string name="reset">Сбросить</string>
+    <string name="filter_by_currency_code">Фильтр по коду валюты</string>
+    <string name="filter_by_rate_range">Фильтр по диапазону курса</string>
+    <string name="min_rate">Мин. курс</string>
+    <string name="max_rate">Макс. курс</string>
+    <string name="error_min_greater_max">Минимальное значение не может быть больше максимального</string>
+    <string name="error_invalid_number">Некорректное число</string>
+    <string name="sort_code_asc">По коду валюты (А-Я)</string>
+    <string name="sort_code_desc">По коду валюты (Я-А)</string>
+    <string name="sort_rate_asc">По курсу (по возрастанию)</string>
+    <string name="sort_rate_desc">По курсу (по убыванию)</string>
+    <string name="filter_description">Оставьте поля пустыми, чтобы не применять соответствующие фильтры</string>
+    <string name="filters_active">Фильтр активен</string>
 
 </resources>

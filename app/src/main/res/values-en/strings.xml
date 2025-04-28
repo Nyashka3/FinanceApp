@@ -125,8 +125,8 @@
     <string name="result">Result</string>
     <string name="currency_rate">Rate</string>
     <string name="currency_change">Change</string>
-    <string name="last_updated">Last updated: %s</string>
-    <string name="base_currency">Base currency: %s</string>
+    <string name="last_updated">Last updated</string>
+    <string name="base_currency">Base currency</string>
 
     <!-- Settings strings -->
     <string name="settings_title">Settings</string>
@@ -181,4 +181,22 @@
     <string name="tax_base">Tax base</string>
     <string name="select_tax_type">Select tax type</string>
     <string name="save_to_database">Save tax to database</string>
+<!--    // TODO : TRANSLATE!!-->
+    <string name="filter">Фильтр</string>
+    <string name="sort">Сортировка</string>
+    <string name="filter_currencies">Фильтр валют</string>
+    <string name="apply">Применить</string>
+    <string name="reset">Сбросить</string>
+    <string name="filter_by_currency_code">Фильтр по коду валюты</string>
+    <string name="filter_by_rate_range">Фильтр по диапазону курса</string>
+    <string name="min_rate">Мин. курс</string>
+    <string name="max_rate">Макс. курс</string>
+    <string name="error_min_greater_max">Минимальное значение не может быть больше максимального</string>
+    <string name="error_invalid_number">Некорректное число</string>
+    <string name="sort_code_asc">По коду валюты (А-Я)</string>
+    <string name="sort_code_desc">По коду валюты (Я-А)</string>
+    <string name="sort_rate_asc">По курсу (по возрастанию)</string>
+    <string name="sort_rate_desc">По курсу (по убыванию)</string>
+    <string name="filter_description">Оставьте поля пустыми, чтобы не применять соответствующие фильтры</string>
+    <string name="filters_active">Фильтр активен</string>
 </resources>
