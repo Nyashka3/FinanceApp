@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
     private static final String BASE_URL = "https://api.example.com/v1/"; // Базовый URL для API
     private static final String CURRENCY_BASE_URL = "https://api.freecurrencyapi.com/"; // Базовый URL для API валют
-    public static final String SUPPORTED_CURRENCIES = "EUR,USD,JPY,CNY,CZK";
+    public static final String SUPPORTED_CURRENCIES = "EUR,USD,JPY,CNY,CZK,INR,ILS,THB,HUF,PLN,RON,TRY,CAD,ILS,KRW,SGD,BGN,DKK,GBP,SEK,CHF,ISK,NOK,HRK,RUB,AUD,BRL,HKD,IDR,MXN,MYR,NZD,PHP,ZAR";
     public static final String API_KEY = "fca_live_BPwqxb36ONW52WvZNI7bTVIEIiQTBrPcFcI8aBow";
 
     private static Retrofit retrofit = null;

@@ -32,7 +32,6 @@ import retrofit2.Response;
 
 /**
  * Репозиторий для работы с курсами валют.
- * Обеспечивает получение данных как из локальной базы данных, так и из сетевого API.
  */
 public class CurrencyRepository {
     private static final String TAG = CurrencyRepository.class.getSimpleName();
@@ -299,6 +298,34 @@ public class CurrencyRepository {
             case "JPY": return "Японская йена";
             case "BYN": return "Белорусский рубль";
             case "CNY": return "Китайский юань";
+            case "INR": return "Индийская рупия";
+            case "HUF": return "Венгерский форинт";
+            case "PLN": return "Польский злотый";
+            case "RON": return "Румынский лей";
+            case "TRY": return "Турецкая лира";
+            case "CAD": return "Канадский доллар";
+            case "ILS": return "Израильский новый шекель";
+            case "KRW": return "Южнокорейская вона";
+            case "SGD": return "Сингапурский доллар";
+            case "BGN": return "Болгарский лев";
+            case "CZK": return "Чешская крона";
+            case "DKK": return "Датская крона";
+            case "GBP": return "Британский фунт стерлингов";
+            case "SEK": return "Шведская крона";
+            case "CHF": return "Швейцарский франк";
+            case "ISK": return "Исландская крона";
+            case "NOK": return "Норвежская крона";
+            case "HRK": return "Хорватская куна";
+            case "AUD": return "Австралийский доллар";
+            case "BRL": return "Бразильский реал";
+            case "HKD": return "Гонконгский доллар";
+            case "IDR": return "Индонезийская рупия";
+            case "MXN": return "Мексиканское песо";
+            case "MYR": return "Малайзийский ринггит";
+            case "NZD": return "Новозеландский доллар";
+            case "PHP": return "Филиппинское песо";
+            case "THB": return "Тайский бат";
+            case "ZAR": return "Южноафриканский рэнд";
             default: return code;
         }
     }
