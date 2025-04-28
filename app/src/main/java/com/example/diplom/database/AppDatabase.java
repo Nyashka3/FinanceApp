@@ -176,25 +176,12 @@ public abstract class AppDatabase extends RoomDatabase {
         rub.setUpdatedAt(currentDate);
         currencyDao.insert(rub);
 
-        // 2. Доллар США (USD)
-        Currency usd = new Currency();
-        usd.setCode("USD");
-        usd.setName("Доллар США");
-        usd.setRate(0.0120613518); // Примерный курс
-        usd.setBaseCurrency("RUB");
-        usd.setTrend("stable");
-        usd.setChange(0.0);
-        usd.setChangePercentage(0.0);
-        usd.setIconUrl("ic_currency_usd");
-        usd.setUpdatedAt(currentDate);
-        currencyDao.insert(usd);
-
-        // 3. Евро (EUR)
+        // 2. Евро (EUR)
         Currency eur = new Currency();
         eur.setCode("EUR");
         eur.setName("Евро");
-        eur.setRate(0.0106083224); // Примерный курс
-        eur.setBaseCurrency("RUB");
+        eur.setRate(1.0); // Базовая валюта
+        eur.setBaseCurrency("EUR");
         eur.setTrend("stable");
         eur.setChange(0.0);
         eur.setChangePercentage(0.0);
@@ -202,121 +189,17 @@ public abstract class AppDatabase extends RoomDatabase {
         eur.setUpdatedAt(currentDate);
         currencyDao.insert(eur);
 
-        // 4. Японская йена (JPY)
-        Currency jpy = new Currency();
-        jpy.setCode("JPY");
-        jpy.setName("Японская йена");
-        jpy.setRate(1.7327729226); // Примерный курс
-        jpy.setBaseCurrency("RUB");
-        jpy.setTrend("stable");
-        jpy.setChange(0.0);
-        jpy.setChangePercentage(0.0);
-        jpy.setIconUrl("ic_currency_jpy");
-        jpy.setUpdatedAt(currentDate);
-        currencyDao.insert(jpy);
-
-        // 5. Чешская крона (CZK)
-        Currency czk = new Currency();
-        czk.setCode("CZK");
-        czk.setName("Чешская крона");
-        czk.setRate(0.033); // Примерный курс
-        czk.setBaseCurrency("RUB");
-        czk.setTrend("stable");
-        czk.setChange(0.0);
-        czk.setChangePercentage(0.0);
-        czk.setIconUrl("ic_currency_czk");
-        czk.setUpdatedAt(currentDate);
-        currencyDao.insert(czk);
-
-        // 6. Китайский юань (CNY)
-        Currency cny = new Currency();
-        cny.setCode("CNY");
-        cny.setName("Китайский юань");
-        cny.setRate(0.085); // Примерный курс
-        cny.setBaseCurrency("RUB");
-        cny.setTrend("stable");
-        cny.setChange(0.0);
-        cny.setChangePercentage(0.0);
-        cny.setIconUrl("ic_currency_cny");
-        cny.setUpdatedAt(currentDate);
-        currencyDao.insert(cny);
-
-        // 1. Доллар США (USD)
-        Currency usdBase = new Currency();
-        usdBase.setCode("USD");
-        usdBase.setName("US Dollar");
-        usdBase.setRate(1.0); // Базовая валюта
-        usdBase.setBaseCurrency("USD");
-        usdBase.setTrend("stable");
-        usdBase.setChange(0.0);
-        usdBase.setChangePercentage(0.0);
-        usdBase.setIconUrl("ic_currency_usd");
-        usdBase.setUpdatedAt(currentDate);
-        currencyDao.insert(usdBase);
-
-// 2. Российский рубль (RUB)
-        Currency rubUsdBase = new Currency();
-        rubUsdBase.setCode("RUB");
-        rubUsdBase.setName("Russian Ruble");
-        rubUsdBase.setRate(82.91); // Примерный курс (1 / 0.0120613518)
-        rubUsdBase.setBaseCurrency("USD");
-        rubUsdBase.setTrend("stable");
-        rubUsdBase.setChange(0.0);
-        rubUsdBase.setChangePercentage(0.0);
-        rubUsdBase.setIconUrl("ic_currency_rub");
-        rubUsdBase.setUpdatedAt(currentDate);
-        currencyDao.insert(rubUsdBase);
-
-// 3. Евро (EUR)
-        Currency eurUsdBase = new Currency();
-        eurUsdBase.setCode("EUR");
-        eurUsdBase.setName("Euro");
-        eurUsdBase.setRate(0.88); // Примерный курс
-        eurUsdBase.setBaseCurrency("USD");
-        eurUsdBase.setTrend("stable");
-        eurUsdBase.setChange(0.0);
-        eurUsdBase.setChangePercentage(0.0);
-        eurUsdBase.setIconUrl("ic_currency_eur");
-        eurUsdBase.setUpdatedAt(currentDate);
-        currencyDao.insert(eurUsdBase);
-
-// 4. Японская йена (JPY)
-        Currency jpyUsdBase = new Currency();
-        jpyUsdBase.setCode("JPY");
-        jpyUsdBase.setName("Japanese Yen");
-        jpyUsdBase.setRate(143.66); // Примерный курс
-        jpyUsdBase.setBaseCurrency("USD");
-        jpyUsdBase.setTrend("stable");
-        jpyUsdBase.setChange(0.0);
-        jpyUsdBase.setChangePercentage(0.0);
-        jpyUsdBase.setIconUrl("ic_currency_jpy");
-        jpyUsdBase.setUpdatedAt(currentDate);
-        currencyDao.insert(jpyUsdBase);
-
-// 5. Чешская крона (CZK)
-        Currency czkUsdBase = new Currency();
-        czkUsdBase.setCode("CZK");
-        czkUsdBase.setName("Czech Koruna");
-        czkUsdBase.setRate(22.5); // Примерный курс
-        czkUsdBase.setBaseCurrency("USD");
-        czkUsdBase.setTrend("stable");
-        czkUsdBase.setChange(0.0);
-        czkUsdBase.setChangePercentage(0.0);
-        czkUsdBase.setIconUrl("ic_currency_czk");
-        czkUsdBase.setUpdatedAt(currentDate);
-        currencyDao.insert(czkUsdBase);
-
-// 6. Китайский юань (CNY)
-        Currency cnyUsdBase = new Currency();
-        cnyUsdBase.setCode("CNY");
-        cnyUsdBase.setName("Chinese Yuan");
-        cnyUsdBase.setRate(7.04); // Примерный курс
-        cnyUsdBase.setBaseCurrency("USD");
-        cnyUsdBase.setTrend("stable");
-        cnyUsdBase.setChange(0.0);
-        cnyUsdBase.setChangePercentage(0.0);
-        cnyUsdBase.setIconUrl("ic_currency_cny");
-        cnyUsdBase.setUpdatedAt(currentDate);
-        currencyDao.insert(cnyUsdBase);
+        // 3. Доллар США (USD)
+        Currency usd = new Currency();
+        usd.setCode("USD");
+        usd.setName("Доллар США");
+        usd.setRate(1.0); // Базовая валюта
+        usd.setBaseCurrency("USD");
+        usd.setTrend("stable");
+        usd.setChange(0.0);
+        usd.setChangePercentage(0.0);
+        usd.setIconUrl("ic_currency_usd");
+        usd.setUpdatedAt(currentDate);
+        currencyDao.insert(usd);
     }
 }

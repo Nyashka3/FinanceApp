@@ -41,6 +41,15 @@
                     android:layout_height="wrap_content"
                     android:padding="16dp">
 
+                    <!-- Добавили иконку валюты справа от названия валюты -->
+                    <ImageView
+                        android:id="@+id/currencyFlagImage"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:src="@drawable/ic_currency_usd" />
+
                     <TextView
                         android:id="@+id/currency_code_text"
                         android:layout_width="wrap_content"
@@ -56,8 +65,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
+                        android:layout_marginEnd="16dp"
                         android:textAppearance="?attr/textAppearanceBody1"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/currencyFlagImage"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/currency_code_text"
                         tools:text="US Dollar" />

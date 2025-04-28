@@ -81,6 +81,18 @@ public class CurrencyAdapter extends ListAdapter<Currency, CurrencyAdapter.Curre
             binding.currencyCodeText.setText(currency.getCode());
             binding.currencyNameText.setText(currency.getName());
 
+            // Устанавливаем флаг валюты
+            String iconName = currency.getIconUrl();
+            int iconResourceId = binding.getRoot().getContext().getResources()
+                    .getIdentifier(iconName, "drawable",
+                            binding.getRoot().getContext().getPackageName());
+            if (iconResourceId != 0) {
+                binding.currencyFlagImage.setImageResource(iconResourceId);
+            } else {
+                // Если иконка не найдена, используем стандартную
+                binding.currencyFlagImage.setImageResource(R.drawable.ic_currency_default);
+            }
+
             // Форматирование и отображение курса валюты
             NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
             format.setMaximumFractionDigits(4);

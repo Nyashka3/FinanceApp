@@ -11,29 +11,40 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="8dp">
 
-        <TextView
-            android:id="@+id/currency_code_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            android:textStyle="bold"
+        <!-- Флаг валюты -->
+        <ImageView
+            android:id="@+id/currencyFlagImage"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="USD" />
+            app:layout_constraintBottom_toBottomOf="@+id/currencyNameText" />
 
+        <!-- Код валюты -->
         <TextView
-            android:id="@+id/currency_name_text"
+            android:id="@+id/currencyCodeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toEndOf="@+id/currencyFlagImage"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Название валюты -->
+        <TextView
+            android:id="@+id/currencyNameText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="16dp"
-            android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constraintEnd_toStartOf="@+id/currency_rate_text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/currency_code_text"
-            tools:text="US Dollar" />
+            android:textSize="14sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toEndOf="@+id/currencyFlagImage"
+            app:layout_constraintTop_toBottomOf="@+id/currencyCodeText"
+            app:layout_constraintEnd_toStartOf="@+id/currency_rate_text" />
 
         <TextView
             android:id="@+id/currency_rate_text"
@@ -86,7 +97,7 @@
             android:textAppearance="?attr/textAppearanceCaption"
             android:textColor="@color/text_secondary"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/currency_name_text"
+            app:layout_constraintTop_toBottomOf="@+id/currencyNameText"
             tools:text="Last updated: 05.04.2025 14:30" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

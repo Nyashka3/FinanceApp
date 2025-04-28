@@ -225,8 +225,8 @@ public class CurrencyViewModel extends AndroidViewModel {
     /**
      * Конвертирует сумму из одной валюты в другую
      * @param amount сумма для конвертации
-     * @param fromCurrency код исходной валюты
-     * @param toCurrency код целевой валюты
+     * @param fromCurrency исходная валюта
+     * @param toCurrency целевая валюта
      * @return конвертированная сумма
      */
     public double convertCurrency(double amount, Currency fromCurrency, Currency toCurrency) {
@@ -236,10 +236,13 @@ public class CurrencyViewModel extends AndroidViewModel {
 
         // Проверяем, что базовая валюта одинаковая
         if (!fromCurrency.getBaseCurrency().equals(toCurrency.getBaseCurrency())) {
-            return 0;
+            // Если базовые валюты разные, нужно использовать кросс-курс
+            // Преобразуем через соотношение их курсов к базовым валютам
+            return amount * (toCurrency.getRate() / fromCurrency.getRate());
         }
 
-        // Конвертация: сначала переводим в базовую валюту, затем в целевую
+        // Базовые валюты совпадают
+        // Преобразуем сначала в базовую валюту, затем в целевую
         double amountInBaseCurrency = amount / fromCurrency.getRate();
         return amountInBaseCurrency * toCurrency.getRate();
     }

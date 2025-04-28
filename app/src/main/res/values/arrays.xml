@@ -28,17 +28,15 @@
 
     <!-- Массивы для валют -->
     <string-array name="currency_entries">
-        <item>Российский рубль (₽)</item>
-        <item>Доллар США ($)</item>
-        <item>Евро (€)</item>
-        <item>Юань (¥)</item>
+        <item>Российский рубль (RUB)</item>
+        <item>Евро (EUR)</item>
+        <item>Доллар США (USD)</item>
     </string-array>
 
     <string-array name="currency_values">
         <item>RUB</item>
-        <item>USD</item>
         <item>EUR</item>
-        <item>CNY</item>
+        <item>USD</item>
     </string-array>
 
     <!-- Массивы для типов налогов -->

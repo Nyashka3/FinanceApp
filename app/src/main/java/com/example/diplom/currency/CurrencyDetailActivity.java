@@ -70,6 +70,9 @@ public class CurrencyDetailActivity extends AppCompatActivity {
     /**
      * Настройка конвертера валют
      */
+    /**
+     * Настройка конвертера валют
+     */
     private void setupCurrencyConverter() {
         binding.convertButton.setOnClickListener(v -> {
             try {
@@ -81,7 +84,7 @@ public class CurrencyDetailActivity extends AppCompatActivity {
                 viewModel.getCurrencyByCode(fromCurrencyCode).observe(this, fromCurrency -> {
                     viewModel.getCurrencyByCode(toCurrencyCode).observe(this, toCurrency -> {
                         if (fromCurrency != null && toCurrency != null) {
-                            // Конвертация валюты
+                            // Конвертация валюты с использованием актуальных курсов
                             double result = viewModel.convertCurrency(amount, fromCurrency, toCurrency);
 
                             // Отображение результата
@@ -116,13 +119,24 @@ public class CurrencyDetailActivity extends AppCompatActivity {
                 binding.fromCurrencySpinner.setAdapter(adapter);
                 binding.toCurrencySpinner.setAdapter(adapter);
 
-                // Устанавливаем выбранную валюту
+                // Устанавливаем базовую валюту как "from"
+                String baseCurrencyCode = PreferenceUtils.getCurrency(this);
+                int fromPosition = 0;
+                int toPosition = 0;
+
+                // Находим индексы для базовой и текущей валюты
                 for (int i = 0; i < currencyCodes.length; i++) {
+                    if (currencyCodes[i].equals(baseCurrencyCode)) {
+                        fromPosition = i;
+                    }
                     if (currencyCodes[i].equals(currencyCode)) {
-                        binding.fromCurrencySpinner.setSelection(i);
-                        break;
+                        toPosition = i;
                     }
                 }
+
+                // Устанавливаем начальные значения спиннеров
+                binding.fromCurrencySpinner.setSelection(fromPosition);
+                binding.toCurrencySpinner.setSelection(toPosition);
             }
         });
     }
