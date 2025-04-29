@@ -84,10 +84,6 @@ public class CurrencyRepository {
         if (currentTime - lastUpdate > CURRENCY_CACHE_EXPIRATION) {
             isLoading.setValue(true);
 
-//            String language = PreferenceUtils.getAppLanguage(context);
-//            baseCode = language.equals("en") ? "USD" : "RUB";
-
-
             apiService.getCurrentRates(
                     ApiClient.API_KEY,
                     ApiClient.SUPPORTED_CURRENCIES,

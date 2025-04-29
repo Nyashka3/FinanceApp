@@ -24,12 +24,7 @@ public class CurrencyFilterDialogFragment extends DialogFragment {
 
     private DialogCurrencyFilterBinding binding;
     private FilterDialogListener listener;
-    //
-    //
-    //
-    //   TODO : FILTERSSSSSS!!!!! ! ! ! ! ! !  !new filter to make nora ^^
-    //
-    //
+
     // Текущие значения фильтров
     private String codeFilter;
     private Double minRate;

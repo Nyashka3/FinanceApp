@@ -35,7 +35,7 @@
     <!-- Строки для экрана расходов -->
     <string name="expenses">Расходы</string>
     <string name="expenses_count">Показано %d расходов</string>
-    <string name="total_amount">Всего: %s</string>
+    <string name="total_amount">Всего: </string>
     <string name="no_expenses">Расходы не найдены</string>
     <string name="new_expense">Новый расход</string>
     <string name="edit_expense">Редактирование расхода</string>

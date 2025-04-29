@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.diplom.BaseLocaleActivity;
 import com.example.diplom.R;
 import com.example.diplom.database.entities.Category;
 import com.example.diplom.database.entities.Expense;
@@ -30,7 +31,7 @@ import java.util.List;
 /**
  * Активность для создания и редактирования расходов
  */
-public class ExpenseDetailActivity extends AppCompatActivity {
+public class ExpenseDetailActivity extends BaseLocaleActivity {
 
     public static final String EXTRA_EXPENSE_ID = "extra_expense_id";
 

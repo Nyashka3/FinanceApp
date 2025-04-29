@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.diplom.BaseLocaleActivity;
 import com.example.diplom.R;
 import com.example.diplom.database.entities.Category;
 import com.example.diplom.database.entities.Expense;
@@ -35,7 +36,7 @@ import java.util.Map;
 /**
  * Активность для управления расходами
  */
-public class ExpensesActivity extends AppCompatActivity implements ExpenseAdapter.OnExpenseClickListener {
+public class ExpensesActivity extends BaseLocaleActivity implements ExpenseAdapter.OnExpenseClickListener {
 
     private static final String TAG = "ExpensesActivity";
 

@@ -56,30 +56,30 @@ public class MainActivity extends BaseLocaleActivity implements ExitDialogFragme
             startActivity(intent);
         });
 
-        binding.viewAnalyticsButton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, AnalyticsActivity.class);
-            startActivity(intent);
-        });
+//        binding.viewAnalyticsButton.setOnClickListener(view -> {
+//            Intent intent = new Intent(MainActivity.this, AnalyticsActivity.class);
+//            startActivity(intent);
+//        });
 
         binding.viewCurrencyButton.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, CurrencyActivity.class);
             startActivity(intent);
         });
 
-        binding.viewTaxesButton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, TaxActivity.class);
-            startActivity(intent);
-        });
+//        binding.viewTaxesButton.setOnClickListener(view -> {
+//            Intent intent = new Intent(MainActivity.this, TaxActivity.class);
+//            startActivity(intent);
+//        });
 
         binding.settingsButton.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
         });
 
-        binding.addExpenseFab.setOnClickListener(view -> {
-            // В будущем здесь может быть переход на экран добавления расхода
-            Snackbar.make(view, R.string.add_expense_coming_soon, Snackbar.LENGTH_SHORT).show();
-        });
+//        binding.addExpenseFab.setOnClickListener(view -> {
+//
+//            Snackbar.make(view, R.string.add_expense_coming_soon, Snackbar.LENGTH_SHORT).show();
+//        });
     }
 
     @Override

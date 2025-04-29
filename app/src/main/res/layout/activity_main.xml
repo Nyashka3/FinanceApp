@@ -35,28 +35,53 @@
                 android:layout_marginBottom="16dp"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:padding="16dp">-->
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/budget_summary"
-                        android:textAppearance="?attr/textAppearanceHeadline6" />
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="@string/budget_summary"-->
+<!--                        android:textAppearance="?attr/textAppearanceHeadline6" />-->
 
-                    <TextView
-                        android:id="@+id/budgetSummaryText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/no_data_available"
-                        android:textAppearance="?attr/textAppearanceBody2" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/budgetSummaryText"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="8dp"-->
+<!--                        android:text="@string/no_data_available"-->
+<!--                        android:textAppearance="?attr/textAppearanceBody2" />-->
 
-                </LinearLayout>
+<!--                </LinearLayout>-->
+
             </com.google.android.material.card.MaterialCardView>
+
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/viewExpensesButton"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="16dp"-->
+<!--                android:text="@string/view_expenses"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/summaryCard" />-->
+
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/viewAnalyticsButton"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:text="@string/view_analytics"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/viewExpensesButton" />-->
+
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/viewTaxesButton"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:text="@string/taxes"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/viewAnalyticsButton" />-->
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/viewExpensesButton"
@@ -66,21 +91,6 @@
                 android:text="@string/view_expenses"
                 app:layout_constraintTop_toBottomOf="@id/summaryCard" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/viewAnalyticsButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/view_analytics"
-                app:layout_constraintTop_toBottomOf="@id/viewExpensesButton" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/viewTaxesButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/taxes"
-                app:layout_constraintTop_toBottomOf="@id/viewAnalyticsButton" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/viewCurrencyButton"
@@ -88,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/currency_rates"
-                app:layout_constraintTop_toBottomOf="@id/viewTaxesButton" />
+                app:layout_constraintTop_toBottomOf="@id/viewExpensesButton" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/settingsButton"
@@ -101,13 +111,13 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addExpenseFab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:contentDescription="@string/add_expense"
-        app:srcCompat="@drawable/ic_add" />
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/addExpenseFab"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="bottom|end"-->
+<!--        android:layout_margin="16dp"-->
+<!--        android:contentDescription="@string/add_expense"-->
+<!--        app:srcCompat="@drawable/ic_add" />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

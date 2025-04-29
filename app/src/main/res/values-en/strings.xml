@@ -41,7 +41,7 @@
     <!-- Expenses screen strings -->
     <string name="expenses">Expenses</string>
     <string name="expenses_count">Showing %d expenses</string>
-    <string name="total_amount">Total: %s</string>
+    <string name="total_amount">Total: </string>
     <string name="no_expenses">No expenses found</string>
     <string name="new_expense">New Expense</string>
     <string name="edit_expense">Edit Expense</string>
@@ -186,22 +186,21 @@
     <string name="tax_base">Tax base</string>
     <string name="select_tax_type">Select tax type</string>
     <string name="save_to_database">Save tax to database</string>
-<!--    // TODO : TRANSLATE!!-->
-    <string name="filter">Фильтр</string>
-    <string name="sort">Сортировка</string>
-    <string name="filter_currencies">Фильтр валют</string>
-    <string name="apply">Применить</string>
-    <string name="reset">Сбросить</string>
-    <string name="filter_by_currency_code">Фильтр по коду валюты</string>
-    <string name="filter_by_rate_range">Фильтр по диапазону курса</string>
-    <string name="min_rate">Мин. курс</string>
-    <string name="max_rate">Макс. курс</string>
-    <string name="error_min_greater_max">Минимальное значение не может быть больше максимального</string>
-    <string name="error_invalid_number">Некорректное число</string>
-    <string name="sort_code_asc">По коду валюты (А-Я)</string>
-    <string name="sort_code_desc">По коду валюты (Я-А)</string>
-    <string name="sort_rate_asc">По курсу (по возрастанию)</string>
-    <string name="sort_rate_desc">По курсу (по убыванию)</string>
-    <string name="filter_description">Оставьте поля пустыми, чтобы не применять соответствующие фильтры</string>
-    <string name="filters_active">Фильтр активен</string>
+    <string name="filter">Filter</string>
+    <string name="sort">Sort</string>
+    <string name="filter_currencies">Filter cuurency</string>
+    <string name="apply">Apply</string>
+    <string name="reset">Clear</string>
+    <string name="filter_by_currency_code">Filter by code</string>
+    <string name="filter_by_rate_range">Filer by rate range</string>
+    <string name="min_rate">Min rate</string>
+    <string name="max_rate">Max rate</string>
+    <string name="error_min_greater_max">Min value greater than max</string>
+    <string name="error_invalid_number">Invalid number</string>
+    <string name="sort_code_asc">By code (A-Z)</string>
+    <string name="sort_code_desc">By code (Z-A)</string>
+    <string name="sort_rate_asc">By rate (asc)</string>
+    <string name="sort_rate_desc">By rate (desc)</string>
+    <string name="filter_description">Leave fileds empty to not apply filters</string>
+    <string name="filters_active">Filter is active</string>
 </resources>

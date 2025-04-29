@@ -115,6 +115,8 @@ public class ExpenseAdapter extends ListAdapter<Expense, ExpenseAdapter.ExpenseV
             // Отображение иконок для материальных и трудовых затрат
             binding.materialCostIcon.setVisibility(expense.isMaterialCost() ? View.VISIBLE : View.GONE);
             binding.laborCostIcon.setVisibility(expense.isLaborCost() ? View.VISIBLE : View.GONE);
+            binding.capitalCostIcon.setVisibility(expense.isCapitalCost() ? View.VISIBLE : View.GONE);
+            binding.energyCostIcon.setVisibility(expense.isEnergyCost() ? View.VISIBLE : View.GONE);
 
             // Отображение категории
             Category category = categoriesMap.get(expense.getCategoryId());

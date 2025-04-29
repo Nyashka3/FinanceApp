@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.diplom.BaseLocaleActivity;
 import com.example.diplom.R;
 import com.example.diplom.database.entities.Currency;
 import com.example.diplom.databinding.ActivityCurrencyDetailBinding;
@@ -25,7 +26,7 @@ import java.util.Locale;
 /**
  * Активность для отображения детальной информации о валюте
  */
-public class CurrencyDetailActivity extends AppCompatActivity {
+public class CurrencyDetailActivity extends BaseLocaleActivity {
 
     public static final String EXTRA_CURRENCY_CODE = "extra_currency_code";
 
@@ -222,9 +223,7 @@ public class CurrencyDetailActivity extends AppCompatActivity {
 
         // Отображение даты обновления
         if (currency.getUpdatedAt() != null) {
-            // TODO : Разобраться почему нету перевода на русский
-            Log.e("Print", "Print: " + getString(R.string.last_updated));
-            Log.e("Context", "Print: " + PreferenceUtils.getAppLanguage(getApplicationContext()));
+
             binding.lastUpdatedText.setText(getString(R.string.last_updated) + DateUtils.formatDateTime(currency.getUpdatedAt()));
         }
     }

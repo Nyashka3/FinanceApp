@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.diplom.BaseLocaleActivity;
 import com.example.diplom.R;
 import com.example.diplom.currency.adapters.CurrencyAdapter;
 import com.example.diplom.currency.CurrencyFilterDialogFragment;
@@ -26,7 +27,7 @@ import com.google.android.material.snackbar.Snackbar;
 /**
  * Активность для отображения списка валют и их курсов
  */
-public class CurrencyActivity extends AppCompatActivity implements
+public class CurrencyActivity extends BaseLocaleActivity implements
         CurrencyAdapter.OnCurrencyClickListener,
         CurrencyFilterDialogFragment.FilterDialogListener,
         CurrencySortDialogFragment.SortDialogListener {
