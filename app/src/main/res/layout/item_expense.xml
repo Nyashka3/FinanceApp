@@ -78,43 +78,47 @@
             app:layout_constraintTop_toBottomOf="@+id/expense_description_text">
 
             <ImageView
-                android:id="@+id/material_cost_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="8dp"
+                android:id="@+id/materialCostIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/ic_material"
                 android:contentDescription="@string/is_material_cost"
-                android:visibility="visible"
                 app:tint="@color/material_intensity"
-                tools:src="@drawable/ic_material" />
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <ImageView
-                android:id="@+id/labor_cost_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="8dp"
+                android:id="@+id/laborCostIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/ic_labor"
                 android:contentDescription="@string/is_labor_cost"
-                android:visibility="visible"
                 app:tint="@color/labor_intensity"
-                tools:src="@drawable/ic_labor" />
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <ImageView
-                android:id="@+id/capital_cost_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="8dp"
+                android:id="@+id/capitalCostIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/ic_depreciation"
                 android:contentDescription="@string/is_capital_cost"
-                android:visibility="visible"
                 app:tint="@color/capital_intensity"
-                tools:src="@drawable/ic_depreciation" />
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <ImageView
-                android:id="@+id/energy_cost_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:id="@+id/energyCostIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_energy"
                 android:contentDescription="@string/is_energy_cost"
-                android:visibility="visible"
                 app:tint="@color/energy_intensity"
-                tools:src="@drawable/ic_energy" />
+                android:visibility="gone"
+                tools:visibility="visible" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
