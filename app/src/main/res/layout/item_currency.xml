@@ -84,7 +84,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:textAppearance="?attr/textAppearanceBody2"
-            android:textColor="@color/positive_amount"
+            android:textColor="#525252"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/currency_rate_text"
             tools:text="(+0.48%)" />

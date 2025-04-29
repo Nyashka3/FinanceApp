@@ -7,12 +7,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.diplom.R;
@@ -41,6 +41,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
     private List<Category> categories;
     private boolean isEditMode = false;
     private boolean isAutoSelectingCheckboxes = false;
+    private Expense currentExpense = null; // Добавляем поле для хранения текущего расхода
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,12 +179,18 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         // Сбрасываем все флажки
         binding.materialCostCheckBox.setChecked(false);
         binding.laborCostCheckBox.setChecked(false);
+        binding.capitalCostCheckBox.setChecked(false);
+        binding.energyCostCheckBox.setChecked(false);
 
         // Устанавливаем флажки в зависимости от категории
         if (ExpenseCategoryUtils.isMaterialIntensive(categoryName)) {
             binding.materialCostCheckBox.setChecked(true);
         } else if (ExpenseCategoryUtils.isLaborIntensive(categoryName)) {
             binding.laborCostCheckBox.setChecked(true);
+        } else if (ExpenseCategoryUtils.isCapitalIntensive(categoryName)) {
+            binding.capitalCostCheckBox.setChecked(true);
+        } else if (ExpenseCategoryUtils.isEnergyIntensive(categoryName)) {
+            binding.energyCostCheckBox.setChecked(true);
         }
 
         // Завершаем автоматическое изменение
@@ -194,42 +201,48 @@ public class ExpenseDetailActivity extends AppCompatActivity {
      * Загрузка данных расхода для редактирования
      */
     private void loadExpenseData() {
-        viewModel.getExpenseById(expenseId).observe(this, expense -> {
-            if (expense != null) {
-                binding.expenseTitleEditText.setText(expense.getTitle());
-                binding.expenseAmountEditText.setText(String.valueOf(expense.getAmount()));
-                binding.expenseDescriptionEditText.setText(expense.getDescription());
+        viewModel.getExpenseById(expenseId).observe(this, new Observer<Expense>() {
+            @Override
+            public void onChanged(Expense expense) {
+                if (expense != null) {
+                    // Сохраняем текущий расход
+                    currentExpense = expense;
 
-                // Установка даты
-                if (expense.getExpenseDate() != null) {
-                    selectedDate = expense.getExpenseDate();
-                    binding.expenseDateEditText.setText(DateUtils.formatDate(selectedDate));
-                }
+                    binding.expenseTitleEditText.setText(expense.getTitle());
+                    binding.expenseAmountEditText.setText(String.valueOf(expense.getAmount()));
+                    binding.expenseDescriptionEditText.setText(expense.getDescription());
 
-                // Установка категории (сохраняем ID в теге спиннера)
-                if (expense.getCategoryId() != null) {
-                    binding.categorySpinner.setTag(expense.getCategoryId());
+                    // Установка даты
+                    if (expense.getExpenseDate() != null) {
+                        selectedDate = expense.getExpenseDate();
+                        binding.expenseDateEditText.setText(DateUtils.formatDate(selectedDate));
+                    }
 
-                    // Если категории уже загружены, выбираем нужную
-                    if (categories != null && !categories.isEmpty()) {
-                        for (int i = 0; i < categories.size(); i++) {
-                            if (categories.get(i).getId() == expense.getCategoryId()) {
-                                isAutoSelectingCheckboxes = true;
-                                binding.categorySpinner.setSelection(i);
-                                isAutoSelectingCheckboxes = false;
-                                break;
+                    // Установка категории (сохраняем ID в теге спиннера)
+                    if (expense.getCategoryId() != null) {
+                        binding.categorySpinner.setTag(expense.getCategoryId());
+
+                        // Если категории уже загружены, выбираем нужную
+                        if (categories != null && !categories.isEmpty()) {
+                            for (int i = 0; i < categories.size(); i++) {
+                                if (categories.get(i).getId() == expense.getCategoryId()) {
+                                    isAutoSelectingCheckboxes = true;
+                                    binding.categorySpinner.setSelection(i);
+                                    isAutoSelectingCheckboxes = false;
+                                    break;
+                                }
                             }
                         }
                     }
-                }
 
-                // Установка чекбоксов типов затрат
-                isAutoSelectingCheckboxes = true;
-                binding.materialCostCheckBox.setChecked(expense.isMaterialCost());
-                binding.laborCostCheckBox.setChecked(expense.isLaborCost());
-                binding.capitalCostCheckBox.setChecked(expense.isCapitalCost());
-                binding.energyCostCheckBox.setChecked(expense.isEnergyCost());
-                isAutoSelectingCheckboxes = false;
+                    // Установка чекбоксов типов затрат
+                    isAutoSelectingCheckboxes = true;
+                    binding.materialCostCheckBox.setChecked(expense.isMaterialCost());
+                    binding.laborCostCheckBox.setChecked(expense.isLaborCost());
+                    binding.capitalCostCheckBox.setChecked(expense.isCapitalCost());
+                    binding.energyCostCheckBox.setChecked(expense.isEnergyCost());
+                    isAutoSelectingCheckboxes = false;
+                }
             }
         });
     }
@@ -267,13 +280,9 @@ public class ExpenseDetailActivity extends AppCompatActivity {
 
         // Создание или обновление объекта расхода
         Expense expense;
-        if (isEditMode) {
-            // Получаем существующий расход
-            expense = viewModel.getExpenseById(expenseId).getValue();
-            if (expense == null) {
-                expense = new Expense();
-                expense.setCreatedAt(new Date());
-            }
+        if (isEditMode && currentExpense != null) {
+            // Используем текущий расход, который у нас уже есть
+            expense = currentExpense;
         } else {
             expense = new Expense();
             expense.setCreatedAt(new Date());
@@ -291,7 +300,6 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         expense.setLaborCost(binding.laborCostCheckBox.isChecked());
         expense.setCapitalCost(binding.capitalCostCheckBox.isChecked());
         expense.setEnergyCost(binding.energyCostCheckBox.isChecked());
-        // Убираем other_cost, так как он излишний
 
         // Сохранение расхода
         if (isEditMode) {
@@ -315,16 +323,19 @@ public class ExpenseDetailActivity extends AppCompatActivity {
             return;
         }
 
+        // Проверяем, что у нас есть текущий расход
+        if (currentExpense == null) {
+            Toast.makeText(this, "Не удалось удалить расход: данные не загружены", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         new AlertDialog.Builder(this)
                 .setTitle(R.string.delete)
                 .setMessage(R.string.confirm_delete_expense)
                 .setPositiveButton(R.string.delete, (dialog, which) -> {
-                    Expense expense = viewModel.getExpenseById(expenseId).getValue();
-                    if (expense != null) {
-                        viewModel.delete(expense);
-                        Toast.makeText(this, R.string.expense_deleted, Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
+                    viewModel.delete(currentExpense);
+                    Toast.makeText(this, R.string.expense_deleted, Toast.LENGTH_SHORT).show();
+                    finish();
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .show();

@@ -264,13 +264,16 @@ public class CurrencyRepository {
     private void updateCurrencyInDatabase(String code, double rate, String trend, double change,
                                           double changePercentage, String baseCurrencyCode, Date updateDate) {
         Currency currency = currencyDao.getCurrencyByCodeSync(code, PreferenceUtils.getCurrency(context));
-
         if (currency != null) {
             // Обновляем существующую валюту
+            var oldRate = currency.getRate();
             currency.setRate(rate);
             currency.setTrend(trend);
-            currency.setChange(change);
-            currency.setChangePercentage(changePercentage);
+            if (oldRate != currency.getRate())
+            {
+                currency.setChange(change); // Меняем только если были изменения в цене
+                currency.setChangePercentage(changePercentage);
+            }
             currency.setBaseCurrency(baseCurrencyCode);
             currency.setUpdatedAt(updateDate);
             currencyDao.update(currency);
@@ -278,7 +281,7 @@ public class CurrencyRepository {
             // Создаем новую валюту
             currency = new Currency();
             currency.setCode(code);
-            currency.setName(getNameForCurrencyCode(code));
+            currency.setName(getNameForCurrencyCode(code, baseCurrencyCode));
             currency.setRate(rate);
             currency.setTrend(trend);
             currency.setChange(change);
@@ -290,42 +293,89 @@ public class CurrencyRepository {
         }
     }
 
-    private String getNameForCurrencyCode(String code) {
-        switch (code) {
-            case "RUB": return "Российский рубль";
-            case "USD": return "Доллар США";
-            case "EUR": return "Евро";
-            case "JPY": return "Японская йена";
-            case "CNY": return "Китайский юань";
-            case "INR": return "Индийская рупия";
-            case "HUF": return "Венгерский форинт";
-            case "PLN": return "Польский злотый";
-            case "RON": return "Румынский лей";
-            case "TRY": return "Турецкая лира";
-            case "CAD": return "Канадский доллар";
-            case "ILS": return "Израильский новый шекель";
-            case "KRW": return "Южнокорейская вона";
-            case "SGD": return "Сингапурский доллар";
-            case "BGN": return "Болгарский лев";
-            case "CZK": return "Чешская крона";
-            case "DKK": return "Датская крона";
-            case "GBP": return "Британский фунт стерлингов";
-            case "SEK": return "Шведская крона";
-            case "CHF": return "Швейцарский франк";
-            case "ISK": return "Исландская крона";
-            case "NOK": return "Норвежская крона";
-            case "HRK": return "Хорватская куна";
-            case "AUD": return "Австралийский доллар";
-            case "BRL": return "Бразильский реал";
-            case "HKD": return "Гонконгский доллар";
-            case "IDR": return "Индонезийская рупия";
-            case "MXN": return "Мексиканское песо";
-            case "MYR": return "Малайзийский ринггит";
-            case "NZD": return "Новозеландский доллар";
-            case "PHP": return "Филиппинское песо";
-            case "THB": return "Не тайский бат";
-            case "ZAR": return "Южноафриканский рэнд";
-            default: return code;
+    private String getNameForCurrencyCode(String currencyCode, String baseCode) {
+        // Validate input
+        if (currencyCode == null) {
+            return currencyCode;
+        }
+
+        // Currency names in Russian
+        if ("RUB".equals(baseCode)) {
+            switch (currencyCode) {
+                case "RUB": return "Российский рубль";
+                case "USD": return "Доллар США";
+                case "EUR": return "Евро";
+                case "JPY": return "Японская йена";
+                case "CNY": return "Китайский юань";
+                case "INR": return "Индийская рупия";
+                case "HUF": return "Венгерский форинт";
+                case "PLN": return "Польский злотый";
+                case "RON": return "Румынский лей";
+                case "TRY": return "Турецкая лира";
+                case "CAD": return "Канадский доллар";
+                case "ILS": return "Израильский новый шекель";
+                case "KRW": return "Южнокорейская вона";
+                case "SGD": return "Сингапурский доллар";
+                case "BGN": return "Болгарский лев";
+                case "CZK": return "Чешская крона";
+                case "DKK": return "Датская крона";
+                case "GBP": return "Британский фунт стерлингов";
+                case "SEK": return "Шведская крона";
+                case "CHF": return "Швейцарский франк";
+                case "ISK": return "Исландская крона";
+                case "NOK": return "Норвежская крона";
+                case "HRK": return "Хорватская куна";
+                case "AUD": return "Австралийский доллар";
+                case "BRL": return "Бразильский реал";
+                case "HKD": return "Гонконгский доллар";
+                case "IDR": return "Индонезийская рупия";
+                case "MXN": return "Мексиканское песо";
+                case "MYR": return "Малайзийский ринггит";
+                case "NZD": return "Новозеландский доллар";
+                case "PHP": return "Филиппинское песо";
+                case "THB": return "Тайский бат";
+                case "ZAR": return "Южноафриканский рэнд";
+                default: return currencyCode;
+            }
+        }
+        // Currency names in English (default)
+        else {
+            switch (currencyCode) {
+                case "RUB": return "Russian Ruble";
+                case "USD": return "US Dollar";
+                case "EUR": return "Euro";
+                case "JPY": return "Japanese Yen";
+                case "CNY": return "Chinese Yuan";
+                case "INR": return "Indian Rupee";
+                case "HUF": return "Hungarian Forint";
+                case "PLN": return "Polish Zloty";
+                case "RON": return "Romanian Leu";
+                case "TRY": return "Turkish Lira";
+                case "CAD": return "Canadian Dollar";
+                case "ILS": return "Israeli New Shekel";
+                case "KRW": return "South Korean Won";
+                case "SGD": return "Singapore Dollar";
+                case "BGN": return "Bulgarian Lev";
+                case "CZK": return "Czech Koruna";
+                case "DKK": return "Danish Krone";
+                case "GBP": return "British Pound Sterling";
+                case "SEK": return "Swedish Krona";
+                case "CHF": return "Swiss Franc";
+                case "ISK": return "Icelandic Krona";
+                case "NOK": return "Norwegian Krone";
+                case "HRK": return "Croatian Kuna";
+                case "AUD": return "Australian Dollar";
+                case "BRL": return "Brazilian Real";
+                case "HKD": return "Hong Kong Dollar";
+                case "IDR": return "Indonesian Rupiah";
+                case "MXN": return "Mexican Peso";
+                case "MYR": return "Malaysian Ringgit";
+                case "NZD": return "New Zealand Dollar";
+                case "PHP": return "Philippine Peso";
+                case "THB": return "Thai Baht";
+                case "ZAR": return "South African Rand";
+                default: return currencyCode;
+            }
         }
     }
 

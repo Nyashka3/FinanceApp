@@ -280,7 +280,7 @@ public class ExpenseViewModel extends AndroidViewModel {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             expenseDao.insert(expense);
             // Обновляем данные после вставки
-            refreshData();
+//            refreshData();
         });
     }
 
@@ -292,7 +292,7 @@ public class ExpenseViewModel extends AndroidViewModel {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             expenseDao.update(expense);
             // Обновляем данные после обновления
-            refreshData();
+//            refreshData();
         });
     }
 
@@ -304,7 +304,7 @@ public class ExpenseViewModel extends AndroidViewModel {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             expenseDao.delete(expense);
             // Обновляем данные после удаления
-            refreshData();
+//            refreshData();
         });
     }
 
