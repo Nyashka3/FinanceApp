@@ -178,6 +178,8 @@ public class CurrencyDetailActivity extends AppCompatActivity {
         binding.currencyCodeText.setText(currency.getCode());
         binding.currencyNameText.setText(currency.getName());
 
+        setCurrencyFlag(currency.getCode().toLowerCase());
+
         // Форматирование и отображение курса валюты
         NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
         format.setMaximumFractionDigits(4);
@@ -224,6 +226,27 @@ public class CurrencyDetailActivity extends AppCompatActivity {
             Log.e("Print", "Print: " + getString(R.string.last_updated));
             Log.e("Context", "Print: " + PreferenceUtils.getAppLanguage(getApplicationContext()));
             binding.lastUpdatedText.setText(getString(R.string.last_updated) + DateUtils.formatDateTime(currency.getUpdatedAt()));
+        }
+    }
+
+    /**
+     * Загрузка флага для валют
+     * @param currencyCode
+     */
+    private void setCurrencyFlag(String currencyCode){
+        try{
+            String flagResourceName = "ic_currency_" + currencyCode.toLowerCase();
+            int resId = getResources().getIdentifier(flagResourceName, "drawable", getPackageName());
+            if (resId != 0){
+                binding.currencyFlagImage.setImageResource(resId);
+            }
+            else{
+                binding.currencyFlagImage.setImageResource(R.drawable.ic_currency_default);
+            }
+        } catch (Exception e){
+            Log.e("CurrencyDetail","Error loading flag for currency: " + currencyCode, e);
+
+            binding.currencyFlagImage.setImageResource(R.drawable.ic_currency_default);
         }
     }
 

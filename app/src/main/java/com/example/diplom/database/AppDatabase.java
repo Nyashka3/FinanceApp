@@ -22,6 +22,7 @@ import com.example.diplom.database.entities.Expense;
 import com.example.diplom.database.entities.Income;
 import com.example.diplom.database.entities.Tax;
 import com.example.diplom.utils.DateConverter;
+import com.example.diplom.utils.ExpenseCategoryUtils;
 
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
@@ -90,50 +91,15 @@ public abstract class AppDatabase extends RoomDatabase {
     private static void populateCategories(AppDatabase database) {
         CategoryDao categoryDao = database.categoryDao();
 
-        // Создание категорий расходов
-        Category materialsCat = new Category();
-        materialsCat.setName("Материалы");
-        materialsCat.setExpense(true);
-        materialsCat.setIcon("ic_material");
-        materialsCat.setColor("#3498db");
-        materialsCat.setCreatedAt(new Date());
-        categoryDao.insert(materialsCat);
-
-        Category laborCat = new Category();
-        laborCat.setName("Оплата труда");
-        laborCat.setExpense(true);
-        laborCat.setIcon("ic_labor");
-        laborCat.setColor("#e74c3c");
-        laborCat.setCreatedAt(new Date());
-        categoryDao.insert(laborCat);
-
-        Category utilitiesCat = new Category();
-        utilitiesCat.setName("Коммунальные услуги");
-        utilitiesCat.setExpense(true);
-        utilitiesCat.setIcon("ic_utilities");
-        utilitiesCat.setColor("#9b59b6");
-        utilitiesCat.setCreatedAt(new Date());
-        categoryDao.insert(utilitiesCat);
-
-        Category rentCat = new Category();
-        rentCat.setName("Аренда");
-        rentCat.setExpense(true);
-        rentCat.setIcon("ic_rent");
-        rentCat.setColor("#f39c12");
-        rentCat.setCreatedAt(new Date());
-        categoryDao.insert(rentCat);
-
-        Category taxesCat = new Category();
-        taxesCat.setName("Налоги");
-        taxesCat.setExpense(true);
-        taxesCat.setIcon("ic_taxes");
-        taxesCat.setColor("#27ae60");
-        taxesCat.setCreatedAt(new Date());
-        categoryDao.insert(taxesCat);
+        // Создание экономически верных категорий расходов
+        for (Category category : ExpenseCategoryUtils.getDefaultExpenseCategories()) {
+            categoryDao.insert(category);
+        }
 
         // Создание категорий доходов
         Category productSalesCat = new Category();
         productSalesCat.setName("Продажи продукции");
+        productSalesCat.setDescription("Доходы от реализации продукции");
         productSalesCat.setExpense(false);
         productSalesCat.setIcon("ic_sales");
         productSalesCat.setColor("#2ecc71");
@@ -142,6 +108,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
         Category servicesCat = new Category();
         servicesCat.setName("Услуги");
+        servicesCat.setDescription("Доходы от оказания услуг");
         servicesCat.setExpense(false);
         servicesCat.setIcon("ic_services");
         servicesCat.setColor("#1abc9c");
@@ -150,6 +117,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
         Category investmentsCat = new Category();
         investmentsCat.setName("Инвестиции");
+        investmentsCat.setDescription("Доходы от инвестиционной деятельности");
         investmentsCat.setExpense(false);
         investmentsCat.setIcon("ic_investments");
         investmentsCat.setColor("#3498db");

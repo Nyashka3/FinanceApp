@@ -3,8 +3,6 @@ package com.example.diplom.database.entities;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
-import androidx.room.ForeignKey;
-import androidx.room.Index;
 
 import java.util.Date;
 
@@ -17,6 +15,8 @@ public class Category {
     private int id;
 
     private String name;
+
+    private String description;
 
     @ColumnInfo(name = "is_expense")
     private boolean isExpense;
@@ -43,6 +43,14 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public boolean isExpense() {
@@ -75,5 +83,10 @@ public class Category {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

@@ -4,13 +4,11 @@
     <string-array name="language_entries">
         <item>@string/language_russian</item>
         <item>@string/language_english</item>
-        <item>@string/language_lorem</item>
     </string-array>
 
     <string-array name="language_values">
         <item>ru</item>
         <item>en</item>
-        <item>lorem</item>
     </string-array>
 
     <!-- Массивы для тем -->

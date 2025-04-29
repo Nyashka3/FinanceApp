@@ -42,6 +42,15 @@ public class Expense {
     @ColumnInfo(name = "is_labor_cost")
     private boolean isLaborCost;
 
+    @ColumnInfo(name = "is_capital_cost")
+    private boolean isCapitalCost;
+
+    @ColumnInfo(name = "is_energy_cost")
+    private boolean isEnergyCost;
+
+    @ColumnInfo(name = "is_other_cost")
+    private boolean isOtherCost;
+
     @ColumnInfo(name = "created_at")
     private Date createdAt;
 
@@ -108,6 +117,30 @@ public class Expense {
 
     public void setLaborCost(boolean laborCost) {
         isLaborCost = laborCost;
+    }
+
+    public boolean isCapitalCost() {
+        return isCapitalCost;
+    }
+
+    public void setCapitalCost(boolean capitalCost) {
+        isCapitalCost = capitalCost;
+    }
+
+    public boolean isEnergyCost() {
+        return isEnergyCost;
+    }
+
+    public void setEnergyCost(boolean energyCost) {
+        isEnergyCost = energyCost;
+    }
+
+    public boolean isOtherCost() {
+        return isOtherCost;
+    }
+
+    public void setOtherCost(boolean otherCost) {
+        isOtherCost = otherCost;
     }
 
     public Date getCreatedAt() {

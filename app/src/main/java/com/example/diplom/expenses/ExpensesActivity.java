@@ -2,11 +2,13 @@ package com.example.diplom.expenses;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,251 +28,421 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Активность для управления расходами
  */
 public class ExpensesActivity extends AppCompatActivity implements ExpenseAdapter.OnExpenseClickListener {
 
+    private static final String TAG = "ExpensesActivity";
+
     private ActivityExpensesBinding binding;
     private ExpenseViewModel viewModel;
     private ExpenseAdapter adapter;
+    private Map<Integer, Category> categoriesMap = new HashMap<>();
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityExpensesBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        setSupportActionBar(binding.toolbar);
+        try {
+            binding = ActivityExpensesBinding.inflate(getLayoutInflater());
+            setContentView(binding.getRoot());
+            setSupportActionBar(binding.toolbar);
 
-        // Настройка кнопки "Назад" в тулбаре
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(R.string.expenses);
+            // Настройка кнопки "Назад" в тулбаре
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setTitle(R.string.expenses);
+            }
+
+            // Инициализация ViewModel
+            viewModel = new ViewModelProvider(this).get(ExpenseViewModel.class);
+
+            // Настройка RecyclerView
+            setupRecyclerView();
+
+            // Настройка фильтров
+            setupFilters();
+
+            // Настройка FAB
+            binding.addExpenseFab.setOnClickListener(v -> {
+                Intent intent = new Intent(ExpensesActivity.this, ExpenseDetailActivity.class);
+                startActivity(intent);
+            });
+
+            // Наблюдение за данными
+            observeData();
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onCreate: ", e);
         }
+    }
 
-        // Инициализация ViewModel
-        viewModel = new ViewModelProvider(this).get(ExpenseViewModel.class);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            // Обновляем данные при возвращении на активность
+            // (например, после редактирования или добавления расхода)
+            if (viewModel != null) {
+                viewModel.refreshData();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onResume: ", e);
+        }
+    }
 
-        // Настройка RecyclerView
-        setupRecyclerView();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        try {
+            getMenuInflater().inflate(R.menu.menu_expenses, menu);
 
-        // Настройка фильтров
-        setupFilters();
+            // Настройка поиска
+            MenuItem searchItem = menu.findItem(R.id.action_search);
+            if (searchItem != null) {
+                searchView = (SearchView) searchItem.getActionView();
 
-        // Настройка FAB
-        binding.addExpenseFab.setOnClickListener(v -> {
-            Intent intent = new Intent(ExpensesActivity.this, ExpenseDetailActivity.class);
-            startActivity(intent);
-        });
+                if (searchView != null) {
+                    searchView.setQueryHint(getString(R.string.search));
+                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                        @Override
+                        public boolean onQueryTextSubmit(String query) {
+                            if (viewModel != null) {
+                                viewModel.setFilterSearch(query);
+                            }
+                            searchView.clearFocus();
+                            return true;
+                        }
 
-        // Наблюдение за данными
-        observeData();
+                        @Override
+                        public boolean onQueryTextChange(String newText) {
+                            if (viewModel != null) {
+                                viewModel.setFilterSearch(newText);
+                            }
+                            return true;
+                        }
+                    });
+
+                    // Обработчик закрытия поиска
+                    searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+                        @Override
+                        public boolean onMenuItemActionExpand(MenuItem item) {
+                            return true;
+                        }
+
+                        @Override
+                        public boolean onMenuItemActionCollapse(MenuItem item) {
+                            if (viewModel != null) {
+                                viewModel.setFilterSearch("");
+                            }
+                            return true;
+                        }
+                    });
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onCreateOptionsMenu: ", e);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        try {
+            int id = item.getItemId();
+
+            if (id == android.R.id.home) {
+                onBackPressed();
+                return true;
+            } else if (id == R.id.action_search) {
+                return true;
+            } else if (id == R.id.action_sort) {
+                showSortDialog();
+                return true;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onOptionsItemSelected: ", e);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
      * Настройка RecyclerView
      */
     private void setupRecyclerView() {
-        adapter = new ExpenseAdapter();
-        adapter.setOnExpenseClickListener(this);
-        binding.expensesRecyclerView.setAdapter(adapter);
-        binding.expensesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        try {
+            adapter = new ExpenseAdapter();
+            adapter.setOnExpenseClickListener(this);
+            binding.expensesRecyclerView.setAdapter(adapter);
+            binding.expensesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        } catch (Exception e) {
+            Log.e(TAG, "Error in setupRecyclerView: ", e);
+        }
     }
 
     /**
      * Настройка фильтров
      */
     private void setupFilters() {
-        // Фильтр по категориям
-        viewModel.getAllCategories().observe(this, categories -> {
-            List<String> categoryNames = new ArrayList<>();
-            categoryNames.add(getString(R.string.all_categories));
+        try {
+            // Фильтр по категориям
+            viewModel.getAllCategories().observe(this, categories -> {
+                try {
+                    if (categories != null) {
+                        // Обновляем карту категорий
+                        categoriesMap.clear();
+                        for (Category category : categories) {
+                            categoriesMap.put(category.getId(), category);
+                        }
 
-            for (Category category : categories) {
-                if (category.isExpense()) {
-                    categoryNames.add(category.getName());
+                        // Передаем категории в адаптер для отображения
+                        if (adapter != null) {
+                            adapter.setCategoriesMap(categoriesMap);
+                        }
+
+                        // Заполняем спиннер категорий для фильтрации
+                        List<String> categoryNames = new ArrayList<>();
+                        categoryNames.add(getString(R.string.all_categories));
+
+                        // Фильтруем только категории расходов
+                        List<Category> expenseCategories = new ArrayList<>();
+                        for (Category category : categories) {
+                            if (category.isExpense()) {
+                                expenseCategories.add(category);
+                            }
+                        }
+
+                        // Добавляем названия категорий в список
+                        for (Category category : expenseCategories) {
+                            categoryNames.add(category.getName());
+                        }
+
+                        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+                                this,
+                                android.R.layout.simple_spinner_item,
+                                categoryNames
+                        );
+                        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        binding.categoryFilterSpinner.setAdapter(categoryAdapter);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error processing categories: ", e);
                 }
-            }
+            });
 
-            ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
-                    this,
-                    android.R.layout.simple_spinner_item,
-                    categoryNames
-            );
-            categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            binding.categoryFilterSpinner.setAdapter(categoryAdapter);
-        });
-
-        binding.categoryFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedCategory = (String) parent.getItemAtPosition(position);
-                if (getString(R.string.all_categories).equals(selectedCategory)) {
-                    viewModel.setFilterCategory(null);
-                } else {
-                    viewModel.setFilterCategory(selectedCategory);
+            // Обработчик выбора категории
+            binding.categoryFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    try {
+                        if (parent != null && parent.getItemAtPosition(position) != null) {
+                            String selectedCategory = (String) parent.getItemAtPosition(position);
+                            if (getString(R.string.all_categories).equals(selectedCategory)) {
+                                viewModel.setFilterCategory(null);
+                            } else {
+                                viewModel.setFilterCategory(selectedCategory);
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error in category selection: ", e);
+                    }
                 }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                viewModel.setFilterCategory(null);
-            }
-        });
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    try {
+                        viewModel.setFilterCategory(null);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error in onNothingSelected: ", e);
+                    }
+                }
+            });
 
-        // Фильтр по датам
-        binding.dateFilterButton.setOnClickListener(v -> showDateRangePicker());
+            // Фильтр по датам
+            binding.dateFilterButton.setOnClickListener(v -> {
+                try {
+                    showDateRangePicker();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error showing date picker: ", e);
+                }
+            });
 
-        // Сброс фильтров
-        binding.resetFiltersButton.setOnClickListener(v -> {
-            binding.categoryFilterSpinner.setSelection(0);
-            viewModel.resetFilters();
-            Snackbar.make(binding.getRoot(), R.string.filters_reset, Snackbar.LENGTH_SHORT).show();
-        });
+            // Сброс фильтров
+            binding.resetFiltersButton.setOnClickListener(v -> {
+                try {
+                    binding.categoryFilterSpinner.setSelection(0);
+                    viewModel.resetFilters();
+                    if (searchView != null) {
+                        searchView.setQuery("", false);
+                        searchView.clearFocus();
+                        searchView.onActionViewCollapsed();
+                    }
+                    Snackbar.make(binding.getRoot(), R.string.filters_reset, Snackbar.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error resetting filters: ", e);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error in setupFilters: ", e);
+        }
     }
 
     /**
-     * Показ диалога выбора периода дат
+     * Показывает диалог выбора периода дат
      */
     private void showDateRangePicker() {
-        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
-        builder.setTitleText(R.string.select_date);
+        try {
+            MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
+            builder.setTitleText(R.string.select_date);
 
-        MaterialDatePicker<Long> picker = builder.build();
-        picker.addOnPositiveButtonClickListener(selection -> {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(selection);
-            Date selectedDate = calendar.getTime();
+            MaterialDatePicker<Long> picker = builder.build();
+            picker.addOnPositiveButtonClickListener(selection -> {
+                try {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(selection);
+                    Date selectedDate = calendar.getTime();
 
-            // Устанавливаем день как начало периода
-            calendar.set(Calendar.HOUR_OF_DAY, 0);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-            Date startDate = calendar.getTime();
+                    // Устанавливаем день как начало периода
+                    calendar.set(Calendar.HOUR_OF_DAY, 0);
+                    calendar.set(Calendar.MINUTE, 0);
+                    calendar.set(Calendar.SECOND, 0);
+                    calendar.set(Calendar.MILLISECOND, 0);
+                    Date startDate = calendar.getTime();
 
-            // Конец дня как конец периода
-            calendar.set(Calendar.HOUR_OF_DAY, 23);
-            calendar.set(Calendar.MINUTE, 59);
-            calendar.set(Calendar.SECOND, 59);
-            calendar.set(Calendar.MILLISECOND, 999);
-            Date endDate = calendar.getTime();
+                    // Конец дня как конец периода
+                    calendar.set(Calendar.HOUR_OF_DAY, 23);
+                    calendar.set(Calendar.MINUTE, 59);
+                    calendar.set(Calendar.SECOND, 59);
+                    calendar.set(Calendar.MILLISECOND, 999);
+                    Date endDate = calendar.getTime();
 
-            viewModel.setFilterDateRange(startDate, endDate);
-            binding.dateFilterButton.setText(getString(R.string.date_filter_active));
-        });
+                    viewModel.setFilterDateRange(startDate, endDate);
+                    binding.dateFilterButton.setText(getString(R.string.date_filter_active));
+                } catch (Exception e) {
+                    Log.e(TAG, "Error processing date selection: ", e);
+                }
+            });
 
-        picker.show(getSupportFragmentManager(), picker.toString());
+            picker.show(getSupportFragmentManager(), picker.toString());
+        } catch (Exception e) {
+            Log.e(TAG, "Error in showDateRangePicker: ", e);
+        }
     }
 
     /**
      * Наблюдение за данными из ViewModel
      */
     private void observeData() {
-        // Наблюдение за отфильтрованными расходами
-        viewModel.getFilteredExpenses().observe(this, expenses -> {
-            if (expenses != null && !expenses.isEmpty()) {
-                binding.noExpensesText.setVisibility(View.GONE);
-                binding.expensesRecyclerView.setVisibility(View.VISIBLE);
-                adapter.submitList(expenses);
+        try {
+            // Наблюдение за отфильтрованными расходами
+            viewModel.getFilteredExpenses().observe(this, expenses -> {
+                try {
+                    if (expenses != null && !expenses.isEmpty()) {
+                        binding.noExpensesText.setVisibility(View.GONE);
+                        binding.expensesRecyclerView.setVisibility(View.VISIBLE);
+                        adapter.submitList(expenses);
 
-                // Обновление счетчика количества расходов
-                binding.expensesCountText.setText(getString(R.string.expenses_count, expenses.size()));
-            } else {
-                binding.noExpensesText.setVisibility(View.VISIBLE);
-                binding.expensesRecyclerView.setVisibility(View.GONE);
-                binding.expensesCountText.setText(getString(R.string.expenses_count, 0));
-            }
-        });
+                        // Обновление счетчика количества расходов
+                        binding.expensesCountText.setText(getString(R.string.expenses_count, expenses.size()));
+                    } else {
+                        binding.noExpensesText.setVisibility(View.VISIBLE);
+                        binding.expensesRecyclerView.setVisibility(View.GONE);
+                        binding.expensesCountText.setText(getString(R.string.expenses_count, 0));
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error updating expenses list: ", e);
+                }
+            });
 
-        // Наблюдение за общей суммой расходов
-        viewModel.getTotalFilteredExpenses().observe(this, total -> {
-            if (total != null) {
-                binding.totalAmountText.setText(CurrencyFormatter.format(total));
-            } else {
-                binding.totalAmountText.setText(CurrencyFormatter.format(0));
-            }
-        });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_expenses, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == android.R.id.home) {
-            onBackPressed();
-            return true;
-        } else if (id == R.id.action_search) {
-            // Показ поиска
-            // Реализация будет в будущем
-            return true;
-        } else if (id == R.id.action_sort) {
-            showSortDialog();
-            return true;
+            // Наблюдение за общей суммой расходов
+            viewModel.getTotalFilteredExpenses().observe(this, total -> {
+                try {
+                    if (total != null) {
+                        binding.totalAmountText.setText(CurrencyFormatter.format(total));
+                    } else {
+                        binding.totalAmountText.setText(CurrencyFormatter.format(0));
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error updating total amount: ", e);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error in observeData: ", e);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**
      * Показывает диалог для выбора сортировки
      */
     private void showSortDialog() {
-        String[] sortOptions = {
-                getString(R.string.sort_date_newest),
-                getString(R.string.sort_date_oldest),
-                getString(R.string.sort_amount_highest),
-                getString(R.string.sort_amount_lowest),
-                getString(R.string.sort_name_az),
-                getString(R.string.sort_name_za)
-        };
+        try {
+            String[] sortOptions = {
+                    getString(R.string.sort_date_newest),
+                    getString(R.string.sort_date_oldest),
+                    getString(R.string.sort_amount_highest),
+                    getString(R.string.sort_amount_lowest),
+                    getString(R.string.sort_name_az),
+                    getString(R.string.sort_name_za)
+            };
 
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.sort_by)
-                .setItems(sortOptions, (dialog, which) -> {
-                    switch (which) {
-                        case 0: // Сортировка по дате (новые сначала)
-                            viewModel.setSortOrder(ExpenseViewModel.SORT_DATE_DESC);
-                            break;
-                        case 1: // Сортировка по дате (старые сначала)
-                            viewModel.setSortOrder(ExpenseViewModel.SORT_DATE_ASC);
-                            break;
-                        case 2: // Сортировка по сумме (по убыванию)
-                            viewModel.setSortOrder(ExpenseViewModel.SORT_AMOUNT_DESC);
-                            break;
-                        case 3: // Сортировка по сумме (по возрастанию)
-                            viewModel.setSortOrder(ExpenseViewModel.SORT_AMOUNT_ASC);
-                            break;
-                        case 4: // Сортировка по названию (A-Z)
-                            viewModel.setSortOrder(ExpenseViewModel.SORT_TITLE_ASC);
-                            break;
-                        case 5: // Сортировка по названию (Z-A)
-                            viewModel.setSortOrder(ExpenseViewModel.SORT_TITLE_DESC);
-                            break;
-                    }
-                })
-                .show();
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.sort_by)
+                    .setItems(sortOptions, (dialog, which) -> {
+                        try {
+                            switch (which) {
+                                case 0: // Сортировка по дате (новые сначала)
+                                    viewModel.setSortOrder(ExpenseViewModel.SORT_DATE_DESC);
+                                    break;
+                                case 1: // Сортировка по дате (старые сначала)
+                                    viewModel.setSortOrder(ExpenseViewModel.SORT_DATE_ASC);
+                                    break;
+                                case 2: // Сортировка по сумме (по убыванию)
+                                    viewModel.setSortOrder(ExpenseViewModel.SORT_AMOUNT_DESC);
+                                    break;
+                                case 3: // Сортировка по сумме (по возрастанию)
+                                    viewModel.setSortOrder(ExpenseViewModel.SORT_AMOUNT_ASC);
+                                    break;
+                                case 4: // Сортировка по названию (A-Z)
+                                    viewModel.setSortOrder(ExpenseViewModel.SORT_TITLE_ASC);
+                                    break;
+                                case 5: // Сортировка по названию (Z-A)
+                                    viewModel.setSortOrder(ExpenseViewModel.SORT_TITLE_DESC);
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error applying sort: ", e);
+                        }
+                    })
+                    .show();
+        } catch (Exception e) {
+            Log.e(TAG, "Error in showSortDialog: ", e);
+        }
     }
 
     @Override
     public void onExpenseClick(Expense expense) {
-        // Открытие детальной активности для редактирования
-        Intent intent = new Intent(ExpensesActivity.this, ExpenseDetailActivity.class);
-        intent.putExtra(ExpenseDetailActivity.EXTRA_EXPENSE_ID, expense.getId());
-        startActivity(intent);
+        try {
+            // Открытие детальной активности для редактирования
+            if (expense != null) {
+                Intent intent = new Intent(ExpensesActivity.this, ExpenseDetailActivity.class);
+                intent.putExtra(ExpenseDetailActivity.EXTRA_EXPENSE_ID, expense.getId());
+                startActivity(intent);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onExpenseClick: ", e);
+        }
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        binding = null;
+        try {
+            super.onDestroy();
+            binding = null;
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onDestroy: ", e);
+        }
     }
 }

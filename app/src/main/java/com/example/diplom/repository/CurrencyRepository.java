@@ -296,7 +296,6 @@ public class CurrencyRepository {
             case "USD": return "Доллар США";
             case "EUR": return "Евро";
             case "JPY": return "Японская йена";
-            case "BYN": return "Белорусский рубль";
             case "CNY": return "Китайский юань";
             case "INR": return "Индийская рупия";
             case "HUF": return "Венгерский форинт";
@@ -324,7 +323,7 @@ public class CurrencyRepository {
             case "MYR": return "Малайзийский ринггит";
             case "NZD": return "Новозеландский доллар";
             case "PHP": return "Филиппинское песо";
-            case "THB": return "Тайский бат";
+            case "THB": return "Не тайский бат";
             case "ZAR": return "Южноафриканский рэнд";
             default: return code;
         }

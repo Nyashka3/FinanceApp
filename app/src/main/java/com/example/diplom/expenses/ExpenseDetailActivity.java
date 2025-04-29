@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import com.example.diplom.database.entities.Category;
 import com.example.diplom.database.entities.Expense;
 import com.example.diplom.databinding.ActivityExpenseDetailBinding;
 import com.example.diplom.utils.DateUtils;
+import com.example.diplom.utils.ExpenseCategoryUtils;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
@@ -38,6 +40,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
     private Date selectedDate = new Date();
     private List<Category> categories;
     private boolean isEditMode = false;
+    private boolean isAutoSelectingCheckboxes = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,12 +132,29 @@ public class ExpenseDetailActivity extends AppCompatActivity {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 binding.categorySpinner.setAdapter(adapter);
 
+                // Устанавливаем слушатель выбора категории
+                binding.categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if (!isAutoSelectingCheckboxes) {
+                            setCheckBoxesBasedOnCategory(categories.get(position).getName());
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        // Ничего не делаем
+                    }
+                });
+
                 // Если мы в режиме редактирования и расход уже загружен, выбираем нужную категорию
                 if (isEditMode && binding.categorySpinner.getTag() != null) {
                     int categoryId = (int) binding.categorySpinner.getTag();
                     for (int i = 0; i < categories.size(); i++) {
                         if (categories.get(i).getId() == categoryId) {
+                            isAutoSelectingCheckboxes = true;
                             binding.categorySpinner.setSelection(i);
+                            isAutoSelectingCheckboxes = false;
                             break;
                         }
                     }
@@ -142,6 +162,32 @@ public class ExpenseDetailActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * Устанавливает флажки в зависимости от выбранной категории
+     * @param categoryName название категории
+     */
+    private void setCheckBoxesBasedOnCategory(String categoryName) {
+        // Если пользователь уже установил флажки вручную, не изменяем их автоматически
+        if (isAutoSelectingCheckboxes) return;
+
+        // Отмечаем, что изменения происходят автоматически
+        isAutoSelectingCheckboxes = true;
+
+        // Сбрасываем все флажки
+        binding.materialCostCheckBox.setChecked(false);
+        binding.laborCostCheckBox.setChecked(false);
+
+        // Устанавливаем флажки в зависимости от категории
+        if (ExpenseCategoryUtils.isMaterialIntensive(categoryName)) {
+            binding.materialCostCheckBox.setChecked(true);
+        } else if (ExpenseCategoryUtils.isLaborIntensive(categoryName)) {
+            binding.laborCostCheckBox.setChecked(true);
+        }
+
+        // Завершаем автоматическое изменение
+        isAutoSelectingCheckboxes = false;
     }
 
     /**
@@ -168,16 +214,22 @@ public class ExpenseDetailActivity extends AppCompatActivity {
                     if (categories != null && !categories.isEmpty()) {
                         for (int i = 0; i < categories.size(); i++) {
                             if (categories.get(i).getId() == expense.getCategoryId()) {
+                                isAutoSelectingCheckboxes = true;
                                 binding.categorySpinner.setSelection(i);
+                                isAutoSelectingCheckboxes = false;
                                 break;
                             }
                         }
                     }
                 }
 
-                // Установка чекбоксов
+                // Установка чекбоксов типов затрат
+                isAutoSelectingCheckboxes = true;
                 binding.materialCostCheckBox.setChecked(expense.isMaterialCost());
                 binding.laborCostCheckBox.setChecked(expense.isLaborCost());
+                binding.capitalCostCheckBox.setChecked(expense.isCapitalCost());
+                binding.energyCostCheckBox.setChecked(expense.isEnergyCost());
+                isAutoSelectingCheckboxes = false;
             }
         });
     }
@@ -233,8 +285,13 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         expense.setDescription(binding.expenseDescriptionEditText.getText().toString().trim());
         expense.setExpenseDate(selectedDate);
         expense.setCategoryId(selectedCategory.getId());
+
+        // Установка флагов типов затрат, соответствующих типам предприятий
         expense.setMaterialCost(binding.materialCostCheckBox.isChecked());
         expense.setLaborCost(binding.laborCostCheckBox.isChecked());
+        expense.setCapitalCost(binding.capitalCostCheckBox.isChecked());
+        expense.setEnergyCost(binding.energyCostCheckBox.isChecked());
+        // Убираем other_cost, так как он излишний
 
         // Сохранение расхода
         if (isEditMode) {

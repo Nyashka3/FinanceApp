@@ -114,13 +114,23 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                android:id="@+id/expense_type_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/expense_type"
+                android:textAppearance="?attr/textAppearanceSubtitle1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/expense_description_layout" />
+
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/material_cost_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/is_material_cost"
-                app:layout_constraintTop_toBottomOf="@+id/expense_description_layout" />
+                app:layout_constraintTop_toBottomOf="@+id/expense_type_label" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/labor_cost_check_box"
@@ -129,13 +139,27 @@
                 android:text="@string/is_labor_cost"
                 app:layout_constraintTop_toBottomOf="@+id/material_cost_check_box" />
 
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/capital_cost_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/is_capital_cost"
+                app:layout_constraintTop_toBottomOf="@+id/labor_cost_check_box" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/energy_cost_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/is_energy_cost"
+                app:layout_constraintTop_toBottomOf="@+id/capital_cost_check_box" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/save_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="@string/save"
-                app:layout_constraintTop_toBottomOf="@+id/labor_cost_check_box" />
+                app:layout_constraintTop_toBottomOf="@+id/energy_cost_check_box" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

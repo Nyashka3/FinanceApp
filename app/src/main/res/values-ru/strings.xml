@@ -59,8 +59,13 @@
     <string name="sort_amount_lowest">Сумма (по возрастанию)</string>
     <string name="sort_name_az">Название (А-Я)</string>
     <string name="sort_name_za">Название (Я-А)</string>
+
+    <!-- Добавляемые строки для типов затрат -->
+    <string name="expense_type">Тип затрат</string>
     <string name="is_material_cost">Материальные затраты</string>
     <string name="is_labor_cost">Трудовые затраты</string>
+    <string name="is_capital_cost">Фондоемкие затраты</string>
+    <string name="is_energy_cost">Энергоемкие затраты</string>
 
     <!-- Дополнительные строки налогов -->
     <string name="income">Доход</string>

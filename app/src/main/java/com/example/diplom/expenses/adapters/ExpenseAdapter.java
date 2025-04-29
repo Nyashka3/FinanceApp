@@ -1,5 +1,6 @@
 package com.example.diplom.expenses.adapters;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +11,14 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.diplom.R;
+import com.example.diplom.database.entities.Category;
 import com.example.diplom.database.entities.Expense;
 import com.example.diplom.databinding.ItemExpenseBinding;
 import com.example.diplom.utils.CurrencyFormatter;
 import com.example.diplom.utils.DateUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Адаптер для отображения списка расходов в RecyclerView
@@ -21,6 +26,7 @@ import com.example.diplom.utils.DateUtils;
 public class ExpenseAdapter extends ListAdapter<Expense, ExpenseAdapter.ExpenseViewHolder> {
 
     private OnExpenseClickListener listener;
+    private Map<Integer, Category> categoriesMap = new HashMap<>();
 
     public ExpenseAdapter() {
         super(DIFF_CALLBACK);
@@ -49,6 +55,15 @@ public class ExpenseAdapter extends ListAdapter<Expense, ExpenseAdapter.ExpenseV
      */
     public void setOnExpenseClickListener(OnExpenseClickListener listener) {
         this.listener = listener;
+    }
+
+    /**
+     * Обновляет карту категорий для отображения
+     * @param categories карта категорий (ID -> Category)
+     */
+    public void setCategoriesMap(Map<Integer, Category> categories) {
+        this.categoriesMap = categories;
+        notifyDataSetChanged();
     }
 
     /**
@@ -102,9 +117,20 @@ public class ExpenseAdapter extends ListAdapter<Expense, ExpenseAdapter.ExpenseV
             binding.laborCostIcon.setVisibility(expense.isLaborCost() ? View.VISIBLE : View.GONE);
 
             // Отображение категории
-            // Здесь должна быть логика для получения категории по ID
-            // Это упрощенный вариант для примера
-            binding.categoryChip.setText("Категория " + expense.getCategoryId());
+            Category category = categoriesMap.get(expense.getCategoryId());
+            if (category != null) {
+                binding.categoryChip.setText(category.getName());
+                try {
+                    // Пытаемся установить цвет категории
+                    int categoryColor = Color.parseColor(category.getColor());
+                    binding.categoryChip.setChipBackgroundColor(android.content.res.ColorStateList.valueOf(categoryColor));
+                    binding.categoryChip.setTextColor(Color.WHITE);
+                } catch (Exception e) {
+                    // Если не удалось установить цвет, используем стандартный
+                }
+            } else {
+                binding.categoryChip.setText("Без категории");
+            }
         }
     }
 

@@ -51,10 +51,6 @@
     <color name="chart_pie_7">#795548</color>
     <color name="chart_pie_8">#607D8B</color>
 
-    <!-- Цвета для анализа эффективности -->
-    <color name="material_intensity">#2196F3</color>
-    <color name="labor_intensity">#F44336</color>
-
     <!-- Текстовые цвета -->
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
@@ -62,4 +58,10 @@
     <color name="text_primary_dark">#FFFFFF</color>
     <color name="text_secondary_dark">#B3FFFFFF</color>
     <color name="text_hint_dark">#80FFFFFF</color>
+
+    <!-- Уточненные цвета для типов затрат и типов предприятий -->
+    <color name="material_intensity">#3498db</color>
+    <color name="labor_intensity">#e74c3c</color>
+    <color name="capital_intensity">#9b59b6</color>
+    <color name="energy_intensity">#f39c12</color>
 </resources>

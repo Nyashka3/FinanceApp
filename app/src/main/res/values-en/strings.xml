@@ -65,8 +65,13 @@
     <string name="sort_amount_lowest">Amount (lowest first)</string>
     <string name="sort_name_az">Name (A-Z)</string>
     <string name="sort_name_za">Name (Z-A)</string>
-    <string name="is_material_cost">Material Cost</string>
-    <string name="is_labor_cost">Labor Cost</string>
+
+    <!-- Добавляемые строки для типов затрат -->
+    <string name="expense_type">Expense type</string>
+    <string name="is_material_cost">Material costs</string>
+    <string name="is_labor_cost">Labor costs</string>
+    <string name="is_capital_cost">Capital-intensive costs</string>
+    <string name="is_energy_cost">Energy-intensive costs</string>
 
     <!-- Analytics screen strings -->
     <string name="analytics">Analytics</string>

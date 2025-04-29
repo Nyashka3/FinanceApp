@@ -32,6 +32,18 @@ public interface ExpenseDao extends BaseDao<Expense> {
     @Query("SELECT SUM(amount) FROM expenses WHERE is_labor_cost = 1 AND expense_date BETWEEN :startDate AND :endDate")
     LiveData<Double> getTotalLaborCostsBetweenDates(Date startDate, Date endDate);
 
-    @Query("SELECT * FROM expenses WHERE title LIKE '%' || :search || '%' OR description LIKE '%' || :search || '%' ORDER BY expense_date DESC")
+    @Query("SELECT SUM(amount) FROM expenses WHERE is_capital_cost = 1 AND expense_date BETWEEN :startDate AND :endDate")
+    LiveData<Double> getTotalCapitalCostsBetweenDates(Date startDate, Date endDate);
+
+    @Query("SELECT SUM(amount) FROM expenses WHERE is_energy_cost = 1 AND expense_date BETWEEN :startDate AND :endDate")
+    LiveData<Double> getTotalEnergyCostsBetweenDates(Date startDate, Date endDate);
+
+    @Query("SELECT SUM(amount) FROM expenses WHERE is_other_cost = 1 AND expense_date BETWEEN :startDate AND :endDate")
+    LiveData<Double> getTotalOtherCostsBetweenDates(Date startDate, Date endDate);
+
+    @Query("SELECT * FROM expenses WHERE " +
+            "(title LIKE '%' || :search || '%' OR " +
+            "description LIKE '%' || :search || '%') " +
+            "ORDER BY expense_date DESC")
     LiveData<List<Expense>> searchExpenses(String search);
 }

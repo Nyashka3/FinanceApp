@@ -69,28 +69,53 @@
             app:layout_constraintTop_toBottomOf="@+id/expense_description_text"
             tools:text="Материалы" />
 
-        <ImageView
-            android:id="@+id/material_cost_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:contentDescription="Материальные затраты"
-            android:visibility="visible"
-            app:layout_constraintEnd_toStartOf="@+id/labor_cost_icon"
-            app:layout_constraintTop_toBottomOf="@+id/expense_description_text"
-            tools:src="@drawable/ic_material" />
-
-        <ImageView
-            android:id="@+id/labor_cost_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="8dp"
-            android:contentDescription="Трудовые затраты"
-            android:visibility="visible"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/expense_description_text"
-            tools:src="@drawable/ic_labor" />
+            app:layout_constraintTop_toBottomOf="@+id/expense_description_text">
+
+            <ImageView
+                android:id="@+id/material_cost_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="@string/is_material_cost"
+                android:visibility="visible"
+                app:tint="@color/material_intensity"
+                tools:src="@drawable/ic_material" />
+
+            <ImageView
+                android:id="@+id/labor_cost_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="@string/is_labor_cost"
+                android:visibility="visible"
+                app:tint="@color/labor_intensity"
+                tools:src="@drawable/ic_labor" />
+
+            <ImageView
+                android:id="@+id/capital_cost_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="@string/is_capital_cost"
+                android:visibility="visible"
+                app:tint="@color/capital_intensity"
+                tools:src="@drawable/ic_depreciation" />
+
+            <ImageView
+                android:id="@+id/energy_cost_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="@string/is_energy_cost"
+                android:visibility="visible"
+                app:tint="@color/energy_intensity"
+                tools:src="@drawable/ic_energy" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -37,6 +37,7 @@ public class ExpenseViewModel extends AndroidViewModel {
     private final MutableLiveData<Date> filterEndDate = new MutableLiveData<>();
     private final MutableLiveData<String> filterSearch = new MutableLiveData<>();
     private final MutableLiveData<Integer> sortOrder = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> dataRefresh = new MutableLiveData<>(false);
 
     private final MediatorLiveData<List<Expense>> filteredExpenses = new MediatorLiveData<>();
     private final MediatorLiveData<Double> totalFilteredExpenses = new MediatorLiveData<>();
@@ -63,6 +64,7 @@ public class ExpenseViewModel extends AndroidViewModel {
 
         // Установка значений по умолчанию
         sortOrder.setValue(SORT_DATE_DESC);
+        filterSearch.setValue("");
 
         // Настройка MediatorLiveData для обработки фильтров и сортировки
         filteredExpenses.addSource(allExpenses, expenses -> applyFiltersAndSort());
@@ -71,6 +73,7 @@ public class ExpenseViewModel extends AndroidViewModel {
         filteredExpenses.addSource(filterEndDate, date -> applyFiltersAndSort());
         filteredExpenses.addSource(filterSearch, search -> applyFiltersAndSort());
         filteredExpenses.addSource(sortOrder, order -> applyFiltersAndSort());
+        filteredExpenses.addSource(dataRefresh, refresh -> applyFiltersAndSort());
 
         // Расчет общей суммы отфильтрованных расходов
         totalFilteredExpenses.addSource(filteredExpenses, expenses -> {
@@ -84,6 +87,13 @@ public class ExpenseViewModel extends AndroidViewModel {
                 totalFilteredExpenses.setValue(0.0);
             }
         });
+    }
+
+    /**
+     * Обновляет данные (используется при возвращении на экран расходов)
+     */
+    public void refreshData() {
+        dataRefresh.setValue(!dataRefresh.getValue());
     }
 
     /**
@@ -101,11 +111,11 @@ public class ExpenseViewModel extends AndroidViewModel {
         // Применение фильтра по категории
         String category = filterCategory.getValue();
         if (category != null && !category.isEmpty()) {
-            // Фильтр по имени категории (в реальном приложении лучше использовать ID)
-            result.removeIf(expense -> {
-                Category expenseCategory = getCategoryById(expense.getCategoryId());
-                return expenseCategory == null || !expenseCategory.getName().equals(category);
-            });
+            // Получаем ID категории по имени
+            Integer categoryId = getCategoryIdByName(category);
+            if (categoryId != null) {
+                result.removeIf(expense -> expense.getCategoryId() == null || !expense.getCategoryId().equals(categoryId));
+            }
         }
 
         // Применение фильтра по диапазону дат
@@ -177,6 +187,23 @@ public class ExpenseViewModel extends AndroidViewModel {
     }
 
     /**
+     * Получение ID категории по имени
+     * @param categoryName имя категории
+     * @return ID категории или null, если не найдена
+     */
+    private Integer getCategoryIdByName(String categoryName) {
+        List<Category> categories = allCategories.getValue();
+        if (categories != null) {
+            for (Category category : categories) {
+                if (category.getName().equals(categoryName)) {
+                    return category.getId();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Получение категории по ID
      * @param categoryId ID категории
      * @return категория или null, если не найдена
@@ -241,7 +268,7 @@ public class ExpenseViewModel extends AndroidViewModel {
         filterCategory.setValue(null);
         filterStartDate.setValue(null);
         filterEndDate.setValue(null);
-        filterSearch.setValue(null);
+        filterSearch.setValue("");
         sortOrder.setValue(SORT_DATE_DESC);
     }
 
@@ -252,6 +279,8 @@ public class ExpenseViewModel extends AndroidViewModel {
     public void insert(Expense expense) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             expenseDao.insert(expense);
+            // Обновляем данные после вставки
+            refreshData();
         });
     }
 
@@ -262,6 +291,8 @@ public class ExpenseViewModel extends AndroidViewModel {
     public void update(Expense expense) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             expenseDao.update(expense);
+            // Обновляем данные после обновления
+            refreshData();
         });
     }
 
@@ -272,6 +303,8 @@ public class ExpenseViewModel extends AndroidViewModel {
     public void delete(Expense expense) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             expenseDao.delete(expense);
+            // Обновляем данные после удаления
+            refreshData();
         });
     }
 
