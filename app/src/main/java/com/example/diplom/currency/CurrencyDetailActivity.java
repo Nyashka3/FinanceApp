@@ -18,6 +18,9 @@ import com.example.diplom.databinding.ActivityCurrencyDetailBinding;
 import com.example.diplom.utils.DateUtils;
 import com.example.diplom.utils.PreferenceUtils;
 import com.google.android.material.snackbar.Snackbar;
+import java.text.DecimalFormatSymbols;
+import android.text.method.DigitsKeyListener;
+import java.text.ParseException;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -74,9 +77,14 @@ public class CurrencyDetailActivity extends BaseLocaleActivity {
      * Настройка конвертера валют
      */
     private void setupCurrencyConverter() {
+        char separator = DecimalFormatSymbols.getInstance().getDecimalSeparator();
+        binding.amountInput.setKeyListener(DigitsKeyListener.getInstance("0123456789" + separator));
+
         binding.convertButton.setOnClickListener(v -> {
             try {
-                double amount = Double.parseDouble(binding.amountInput.getText().toString());
+                NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
+                Number number = format.parse(binding.amountInput.getText().toString());
+                double amount = number.doubleValue();
                 String fromCurrencyCode = binding.fromCurrencySpinner.getSelectedItem().toString();
                 String toCurrencyCode = binding.toCurrencySpinner.getSelectedItem().toString();
 
@@ -88,17 +96,18 @@ public class CurrencyDetailActivity extends BaseLocaleActivity {
                             double result = viewModel.convertCurrency(amount, fromCurrency, toCurrency);
 
                             // Отображение результата
-                            NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
-                            format.setMaximumFractionDigits(4);
-                            binding.resultText.setText(format.format(result));
+                            NumberFormat formatedResult = NumberFormat.getInstance(Locale.getDefault());
+                            formatedResult.setMaximumFractionDigits(4);
+                            binding.resultText.setText(formatedResult.format(result));
                         } else {
                             Snackbar.make(binding.getRoot(), R.string.error_currency_not_found, Snackbar.LENGTH_SHORT).show();
                         }
                     });
                 });
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException | ParseException e) {
                 Snackbar.make(binding.getRoot(), R.string.error_invalid_amount, Snackbar.LENGTH_SHORT).show();
             }
+
         });
 
         // Заполнение спиннеров валют
