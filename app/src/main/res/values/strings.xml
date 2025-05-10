@@ -224,4 +224,14 @@
     <string name="currency_menu_description">Текущие курсы валют и конвертер. Отслеживайте изменения курсов основных мировых валют</string>
     <string name="settings_menu_description">Настройки приложения. Измените язык, тему, уведомления и другие параметры</string>
 
+    <!-- Добавьте в существующий файл -->
+    <string name="scan_receipt">Сканировать чек</string>
+    <string name="scanning_cancelled">Сканирование отменено</string>
+    <string name="camera_permission_required">Для сканирования QR-кода необходимо разрешение камеры</string>
+    <string name="expense_from_receipt">Из чека</string>
+    <string name="scan_qr_prompt">Отсканируйте QR-код чека</string>
+    <string name="qr_parse_error">Не удалось извлечь сумму из QR-кода</string>
+    <string name="expense_added_format">Добавлен расход: %.2f ₽</string>
+    <string name="scanned_from_qr">Отсканировано из QR-кода чека: %s</string>
+
 </resources>

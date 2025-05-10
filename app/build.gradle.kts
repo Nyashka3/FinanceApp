@@ -54,4 +54,8 @@ dependencies {
     implementation(libs.mpandroidchart)
     implementation(libs.preference)
     implementation(libs.swiperefreshlayout)
+
+    // ZXing для сканирования QR-кодов
+    implementation(libs.zxing.android.embedded)
+    implementation(libs.zxing.core)
 }

@@ -119,7 +119,8 @@ public class DateUtils {
                 DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"),
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"),
                 DateTimeFormatter.ofPattern("dd.MM.yyyy"),
-                DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                DateTimeFormatter.ofPattern("dd/MM/yyyy"),
+                DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmm")
         };
 
         for (DateTimeFormatter formatter : dateFormatters) {

@@ -1,6 +1,7 @@
 package com.example.diplom.expenses;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -9,22 +10,31 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.SearchView;
+import android.Manifest;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.diplom.BaseLocaleActivity;
 import com.example.diplom.R;
+import com.example.diplom.database.AppDatabase;
+import com.example.diplom.database.dao.ExpenseDao;
 import com.example.diplom.database.entities.Category;
 import com.example.diplom.database.entities.Expense;
 import com.example.diplom.databinding.ActivityExpensesBinding;
 import com.example.diplom.expenses.adapters.ExpenseAdapter;
 import com.example.diplom.utils.CurrencyFormatter;
+import com.example.diplom.utils.QRReceiptParser;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,6 +55,8 @@ public class ExpensesActivity extends BaseLocaleActivity implements ExpenseAdapt
     private ExpenseAdapter adapter;
     private Map<Integer, Category> categoriesMap = new HashMap<>();
     private SearchView searchView;
+    private ActivityResultLauncher<ScanOptions> barcodeLauncher;
+    private ActivityResultLauncher<String> requestPermissionLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +89,15 @@ public class ExpensesActivity extends BaseLocaleActivity implements ExpenseAdapt
 
             // Наблюдение за данными
             observeData();
+
+            // Инициализация сканера QR-кодов
+            initQRScanner();
+
+            // Добавление слушателя для кнопки сканирования
+            binding.scanReceiptFab.setOnClickListener(v -> {
+                checkCameraPermissionAndScan();
+            });
+
         } catch (Exception e) {
             Log.e(TAG, "Error in onCreate: ", e);
         }
@@ -446,4 +467,98 @@ public class ExpensesActivity extends BaseLocaleActivity implements ExpenseAdapt
             Log.e(TAG, "Error in onDestroy: ", e);
         }
     }
+
+    /**
+     * Инициализирует сканер QR-кодов
+     */
+    private void initQRScanner() {
+        // Регистрация launcher для результата сканирования
+        barcodeLauncher = registerForActivityResult(new ScanContract(),
+                result -> {
+                    if (result.getContents() == null) {
+                        Snackbar.make(binding.getRoot(), "Сканирование отменено", Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        // Обработка результата сканирования
+                        handleQRResult(result.getContents());
+                    }
+                });
+
+        // Регистрация launcher для запроса разрешения камеры
+        requestPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    if (isGranted) {
+                        startQRScanning();
+                    } else {
+                        Snackbar.make(binding.getRoot(),
+                                "Для сканирования QR-кода необходимо разрешение камеры",
+                                Snackbar.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    /**
+     * Проверяет разрешение камеры и запускает сканирование
+     */
+    private void checkCameraPermissionAndScan() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            startQRScanning();
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+        }
+    }
+
+    /**
+     * Запускает сканирование QR-кода
+     */
+    private void startQRScanning() {
+        ScanOptions options = new ScanOptions();
+        options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
+        options.setPrompt("Отсканируйте QR-код чека");
+        options.setCameraId(0);
+        options.setBeepEnabled(true);
+        options.setBarcodeImageEnabled(true);
+        barcodeLauncher.launch(options);
+    }
+
+    /**
+     * Обрабатывает результат сканирования QR-кода
+     * @param qrContent содержимое QR-кода
+     */
+    private void handleQRResult(String qrContent) {
+        // Извлекаем сумму из QR-кода
+        Double amount = QRReceiptParser.extractAmount(qrContent);
+
+        if (amount != null) {
+            // Создаем новый расход
+            Expense expense = new Expense();
+            expense.setTitle("Из чека");
+            expense.setAmount(amount);
+            expense.setCreatedAt(new Date());
+            expense.setDescription("Отсканировано из QR-кода чека");
+            var date = QRReceiptParser.extractDateTime(qrContent);
+            if (date != null)
+                expense.setExpenseDate(date);
+            else
+                expense.setExpenseDate(new Date());
+
+            // Сохраняем расход в базу данных
+            AppDatabase.databaseWriteExecutor.execute(() -> {
+                ExpenseDao expenseDao = AppDatabase.getDatabase(this).expenseDao();
+                expenseDao.insert(expense);
+
+                runOnUiThread(() -> {
+                    Snackbar.make(binding.getRoot(),
+                            String.format("Добавлен расход: %.2f ₽", amount),
+                            Snackbar.LENGTH_LONG).show();
+                });
+            });
+        } else {
+            Snackbar.make(binding.getRoot(),
+                    "Не удалось извлечь сумму из QR-кода",
+                    Snackbar.LENGTH_LONG).show();
+        }
+    }
+
 }

@@ -140,6 +140,8 @@
             android:padding="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/summaryCard"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_editor_absoluteX="39dp"
             tools:listitem="@layout/item_expense" />
 
         <TextView
@@ -164,5 +166,16 @@
         android:layout_margin="16dp"
         android:contentDescription="@string/add_expense"
         app:srcCompat="@drawable/ic_add" />
+
+    <!-- FAB для сканирования чека -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/scan_receipt_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="80dp"
+        app:srcCompat="@drawable/ic_qr_code"
+        android:contentDescription="Сканировать QR-код чека" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

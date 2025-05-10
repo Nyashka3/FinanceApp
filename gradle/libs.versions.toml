@@ -13,6 +13,8 @@ gson = "2.10.1"
 mpandroidchart = "v3.1.0"
 preference = "1.2.1"
 swiperefreshlayout = "1.1.0"
+zxing-android-embedded = "4.3.0"
+zxing-core = "3.5.1"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -29,6 +31,9 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpandroidchart" }
 preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
+zxing-android-embedded = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "zxing-android-embedded" }
+zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing-core" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.diplom.utils.PreferenceUtils;
-
+// TODO : походу не используется
 /**
  * ViewModel для работы с настройками приложения
  */
