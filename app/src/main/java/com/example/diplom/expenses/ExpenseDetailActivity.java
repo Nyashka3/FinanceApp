@@ -22,6 +22,7 @@ import com.example.diplom.database.entities.Expense;
 import com.example.diplom.databinding.ActivityExpenseDetailBinding;
 import com.example.diplom.utils.DateUtils;
 import com.example.diplom.utils.ExpenseCategoryUtils;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
@@ -82,7 +83,7 @@ public class ExpenseDetailActivity extends BaseLocaleActivity {
     }
 
     /**
-     * Настройка выбора даты
+     * Настройка выбора даты с использованием MaterialDatePicker
      */
     private void setupDatePicker() {
         binding.expenseDateEditText.setFocusable(false);
@@ -90,22 +91,25 @@ public class ExpenseDetailActivity extends BaseLocaleActivity {
         binding.expenseDateEditText.setText(DateUtils.formatDate(selectedDate));
 
         binding.expenseDateEditText.setOnClickListener(v -> {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(selectedDate);
+            // Создание MaterialDatePicker
+            MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
+            builder.setTitleText(R.string.select_date);
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(
-                    this,
-                    (view, year, month, dayOfMonth) -> {
-                        Calendar newDate = Calendar.getInstance();
-                        newDate.set(year, month, dayOfMonth);
-                        selectedDate = newDate.getTime();
-                        binding.expenseDateEditText.setText(DateUtils.formatDate(selectedDate));
-                    },
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH)
-            );
-            datePickerDialog.show();
+            // Устанавливаем текущую выбранную дату как начальную
+            builder.setSelection(selectedDate.getTime());
+
+            MaterialDatePicker<Long> picker = builder.build();
+
+            // Обработчик выбора даты
+            picker.addOnPositiveButtonClickListener(selection -> {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(selection);
+                selectedDate = calendar.getTime();
+                binding.expenseDateEditText.setText(DateUtils.formatDate(selectedDate));
+            });
+
+            // Показываем диалог
+            picker.show(getSupportFragmentManager(), picker.toString());
         });
     }
 

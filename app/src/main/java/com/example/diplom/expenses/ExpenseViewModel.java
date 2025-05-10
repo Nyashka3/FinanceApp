@@ -113,7 +113,7 @@ public class ExpenseViewModel extends AndroidViewModel {
         if (category != null && !category.isEmpty()) {
             // Получаем ID категории по имени
             Integer categoryId = getCategoryIdByName(category);
-            if (categoryId != null) {
+            if (categoryId != -1) {
                 result.removeIf(expense -> expense.getCategoryId() == null || !expense.getCategoryId().equals(categoryId));
             }
         }
@@ -200,9 +200,7 @@ public class ExpenseViewModel extends AndroidViewModel {
                 }
             }
         }
-
-        // TODO: Возвращать не нулл, если не найдено -1
-        return null;
+        return -1;
     }
 
     /**
