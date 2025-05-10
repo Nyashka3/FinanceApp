@@ -125,7 +125,7 @@
     <string name="currency_rate">Курс</string>
     <string name="currency_change">Изменение</string>
     <string name="last_updated">Последнее обновление</string>
-    <string name="base_currency">Базовая валюта</string>
+    <string name="base_currency">Базовая валюта </string>
 
     <!-- Строки для настроек -->
     <string name="settings_title">Настройки</string>

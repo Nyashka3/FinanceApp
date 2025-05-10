@@ -227,12 +227,12 @@ public class CurrencyDetailActivity extends BaseLocaleActivity {
         binding.currencyPercentText.setText(percentFormat.format(currency.getChangePercentage() / 100));
 
         // Отображение базовой валюты
-        binding.baseCurrencyText.setText(getString(R.string.base_currency) + currency.getBaseCurrency());
+        binding.baseCurrencyText.setText(getString(R.string.base_currency) + " " + currency.getBaseCurrency());
 
         // Отображение даты обновления
         if (currency.getUpdatedAt() != null) {
 
-            binding.lastUpdatedText.setText(getString(R.string.last_updated) + DateUtils.formatDateTime(currency.getUpdatedAt()));
+            binding.lastUpdatedText.setText(getString(R.string.last_updated) + " " + DateUtils.formatDateTime(currency.getUpdatedAt()));
         }
     }
 
