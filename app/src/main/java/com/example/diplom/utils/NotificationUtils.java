@@ -68,6 +68,8 @@ public class NotificationUtils {
                 .setAutoCancel(true);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // TODO: на сайте андроида найти код, разрешения
         notificationManager.notify(notificationId, builder.build());
     }
 

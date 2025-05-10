@@ -295,7 +295,6 @@ public class CurrencyRepository {
             return currencyCode;
         }
 
-        // Currency names in Russian
         if ("RUB".equals(baseCode)) {
             switch (currencyCode) {
                 case "RUB": return "Российский рубль";
@@ -334,7 +333,6 @@ public class CurrencyRepository {
                 default: return currencyCode;
             }
         }
-        // Currency names in English (default)
         else {
             switch (currencyCode) {
                 case "RUB": return "Russian Ruble";

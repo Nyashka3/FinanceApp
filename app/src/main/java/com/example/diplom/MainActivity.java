@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 
-import com.example.diplom.analytics.AnalyticsActivity;
 import com.example.diplom.currency.CurrencyActivity;
 import com.example.diplom.databinding.ActivityMainBinding;
 import com.example.diplom.expenses.ExpensesActivity;
@@ -56,10 +55,6 @@ public class MainActivity extends BaseLocaleActivity implements ExitDialogFragme
             startActivity(intent);
         });
 
-//        binding.viewAnalyticsButton.setOnClickListener(view -> {
-//            Intent intent = new Intent(MainActivity.this, AnalyticsActivity.class);
-//            startActivity(intent);
-//        });
 
         binding.viewCurrencyButton.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, CurrencyActivity.class);

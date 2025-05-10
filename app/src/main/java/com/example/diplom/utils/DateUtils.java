@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+// TODO: Date заменить на LocalDate. Simple date format заменить на date time formatter
 /**
  * Утилитный класс для работы с датами.
  */

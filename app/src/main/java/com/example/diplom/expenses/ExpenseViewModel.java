@@ -200,6 +200,8 @@ public class ExpenseViewModel extends AndroidViewModel {
                 }
             }
         }
+
+        // TODO: Возвращать не нулл, если не найдено -1
         return null;
     }
 
