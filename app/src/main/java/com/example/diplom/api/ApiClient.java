@@ -1,5 +1,7 @@
 package com.example.diplom.api;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -23,6 +25,8 @@ public class ApiClient {
     public static Retrofit getCurrencyClient() {
         if (currencyRetrofit == null) {
             OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+            httpClient.callTimeout(10, TimeUnit.SECONDS);
 
             // Добавляем логирование HTTP запросов
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();

@@ -203,4 +203,9 @@
     <string name="sort_rate_desc">By rate (desc)</string>
     <string name="filter_description">Leave fileds empty to not apply filters</string>
     <string name="filters_active">Filter is active</string>
+
+    <string name="error_timeout">Server response timeout exceeded</string>
+    <string name="error_no_internet">No internet connection</string>
+    <string name="error_network">Network error</string>
+
 </resources>

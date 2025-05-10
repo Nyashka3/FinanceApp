@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.diplom.R;
 import com.example.diplom.api.ApiClient;
 import com.example.diplom.api.CurrencyApiService;
 import com.example.diplom.api.models.CurrencyRate;
@@ -14,7 +15,6 @@ import com.example.diplom.database.AppDatabase;
 import com.example.diplom.database.dao.CurrencyDao;
 import com.example.diplom.database.entities.Currency;
 import com.example.diplom.utils.PreferenceUtils;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,14 +52,9 @@ public class CurrencyRepository {
         apiService = ApiClient.getCurrencyApiService();
         preferences = context.getSharedPreferences("currency_prefs", Context.MODE_PRIVATE);
 
-//        String language = PreferenceUtils.getAppLanguage(context);
-//        baseCode = language.equals("en") ? "USD" : "RUB";
-
         // Загрузка данных из локальной базы данных
         AppDatabase.databaseWriteExecutor.execute(() -> {
             List<Currency> currencies = currencyDao.getAllCurrenciesByBaseSync(PreferenceUtils.getCurrency(context));
-
-            //currencies.sort(Comparator.comparing(Currency::getCode).reversed()); через например клик листенер
 
             allCurrencies.postValue(currencies);
             loadPopularCurrencies();
@@ -109,9 +104,14 @@ public class CurrencyRepository {
 
                 @Override
                 public void onFailure(Call<CurrencyRate> call, Throwable t) {
-                    isLoading.setValue(false);
-                    errorMessage.setValue("Ошибка подключения: " + t.getMessage());
+                    handleError(t); // Используем метод handleError для обработки ошибок
                     Log.e(TAG, "API call failed", t);
+                    // Загружаем данные из базы данных в случае ошибки
+                    AppDatabase.databaseWriteExecutor.execute(() -> {
+                        List<Currency> currencies = currencyDao.getAllCurrenciesByBaseSync(PreferenceUtils.getCurrency(context));
+                        allCurrencies.postValue(currencies);
+                        loadPopularCurrencies();
+                    });
                 }
             });
         } else {
@@ -124,30 +124,22 @@ public class CurrencyRepository {
         }
     }
 
-    /**
-     * Сохраняет курсы валют в кэш (SharedPreferences)
-     * @param currencyRates список курсов валют
-     */
-    private void saveToCache(List<CurrencyRate> currencyRates) {
-        SharedPreferences.Editor editor = preferences.edit();
-        Gson gson = new Gson();
-        editor.putString(PREF_CURRENCY_CACHE, gson.toJson(currencyRates));
-        editor.putLong(PREF_CURRENCY_LAST_UPDATE, System.currentTimeMillis());
-        editor.apply();
-    }
+    private void handleError(Throwable throwable) {
+        String error;
 
-    /**
-     * Загружает курсы валют из кэша
-     */
-//    private void loadFromCache() {
-//        String cacheJson = preferences.getString(PREF_CURRENCY_CACHE, null);
-//        if (cacheJson != null) {
-//            Gson gson = new Gson();
-//            Type type = new TypeToken<List<CurrencyRate>>() {}.getType();
-//            List<CurrencyRate> cachedRates = gson.fromJson(cacheJson, type);
-//            saveToDatabase(cachedRates);
-//        }
-//    }
+        if (throwable instanceof java.net.SocketTimeoutException) {
+            error = context.getString(R.string.error_timeout);
+        } else if (throwable instanceof java.net.UnknownHostException) {
+            error = context.getString(R.string.error_no_internet);
+        } else if (throwable instanceof java.io.IOException) {
+            error = context.getString(R.string.error_network);
+        } else {
+            error = context.getString(R.string.error_api_connection, throwable.getMessage());
+        }
+
+        errorMessage.postValue(error);
+        isLoading.postValue(false);
+    }
 
     /**
      * Сохраняет курсы валют в локальную базу данных

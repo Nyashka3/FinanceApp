@@ -215,4 +215,8 @@
     <string name="filter_description">Оставьте поля пустыми, чтобы не применять соответствующие фильтры</string>
     <string name="filters_active">Фильтр активен</string>
 
+    <string name="error_timeout">Превышено время ожидания ответа от сервера</string>
+    <string name="error_no_internet">Нет подключения к интернету</string>
+    <string name="error_network">Ошибка сети</string>
+
 </resources>
