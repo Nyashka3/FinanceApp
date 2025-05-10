@@ -208,4 +208,9 @@
     <string name="error_no_internet">No internet connection</string>
     <string name="error_network">Network error</string>
 
+    <!-- Menu item descriptions -->
+    <string name="expenses_menu_description">Manage expenses and budget. Add, edit and analyze your financial transactions</string>
+    <string name="currency_menu_description">Current exchange rates and converter. Track changes in major world currencies</string>
+    <string name="settings_menu_description">Application settings. Change language, theme, notifications and other parameters</string>
+
 </resources>

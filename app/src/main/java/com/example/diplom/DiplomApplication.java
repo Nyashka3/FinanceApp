@@ -4,9 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
 
-import androidx.appcompat.app.AppCompatDelegate;
-
-import com.example.diplom.utils.NotificationUtils;
 import com.example.diplom.utils.PreferenceUtils;
 import com.google.android.material.color.DynamicColors;
 
@@ -18,9 +15,6 @@ public class DiplomApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        // Инициализация канала уведомлений
-        NotificationUtils.createNotificationChannel(this);
 
         // Применение сохраненной темы
         applyAppTheme();

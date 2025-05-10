@@ -1,15 +1,15 @@
 package com.example.diplom.utils;
 
-import android.text.format.DateFormat;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
-// TODO: Date заменить на LocalDate. Simple date format заменить на date time formatter
 /**
  * Утилитный класс для работы с датами.
  */
@@ -24,8 +24,9 @@ public class DateUtils {
         if (date == null) {
             return "";
         }
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-        return dateFormat.format(date);
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return localDate.format(formatter);
     }
 
     /**
@@ -37,8 +38,9 @@ public class DateUtils {
         if (date == null) {
             return "";
         }
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
-        return dateFormat.format(date);
+        LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        return localDateTime.format(formatter);
     }
 
     /**
@@ -50,8 +52,9 @@ public class DateUtils {
         if (date == null) {
             return "";
         }
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", new Locale("ru"));
-        return dateFormat.format(date);
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", new Locale("ru"));
+        return localDate.format(formatter);
     }
 
     /**
@@ -63,11 +66,9 @@ public class DateUtils {
         if (date == null) {
             return false;
         }
-        Calendar today = Calendar.getInstance();
-        Calendar calendarDate = Calendar.getInstance();
-        calendarDate.setTime(date);
-        return today.get(Calendar.YEAR) == calendarDate.get(Calendar.YEAR) &&
-                today.get(Calendar.DAY_OF_YEAR) == calendarDate.get(Calendar.DAY_OF_YEAR);
+        LocalDate today = LocalDate.now();
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return today.equals(localDate);
     }
 
     /**
@@ -75,13 +76,9 @@ public class DateUtils {
      * @return дата начала текущего месяца
      */
     public static Date getStartOfCurrentMonth() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar.getTime();
+        LocalDate firstDayOfMonth = LocalDate.now().withDayOfMonth(1);
+        LocalDateTime startOfMonth = firstDayOfMonth.atStartOfDay();
+        return Date.from(startOfMonth.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     /**
@@ -89,13 +86,9 @@ public class DateUtils {
      * @return дата конца текущего месяца
      */
     public static Date getEndOfCurrentMonth() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        calendar.set(Calendar.MILLISECOND, 999);
-        return calendar.getTime();
+        LocalDate lastDayOfMonth = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
+        LocalDateTime endOfMonth = lastDayOfMonth.atTime(LocalTime.MAX);
+        return Date.from(endOfMonth.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     /**
@@ -105,13 +98,14 @@ public class DateUtils {
      * @return количество дней между датами
      */
     public static long getDaysBetween(Date startDate, Date endDate) {
-        long diffInMillies = Math.abs(endDate.getTime() - startDate.getTime());
-        return TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        LocalDate start = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate end = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return ChronoUnit.DAYS.between(start, end);
     }
 
     /**
      * Преобразует строку с датой в объект Date
-     * @param dateStr строка с датой в формате "yyyy-MM-dd" или "yyyy-MM-dd'T'HH:mm:ss"
+     * @param dateStr строка с датой в различных форматах
      * @return объект Date или null, если преобразование не удалось
      */
     public static Date parseDate(String dateStr) {
@@ -119,24 +113,82 @@ public class DateUtils {
             return null;
         }
 
-        // Пробуем разные форматы даты
-        SimpleDateFormat[] dateFormats = {
-                new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()),
-                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()),
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()),
-                new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()),
-                new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        // Определяем различные форматы даты
+        DateTimeFormatter[] dateFormatters = {
+                DateTimeFormatter.ofPattern("yyyy-MM-dd"),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"),
+                DateTimeFormatter.ofPattern("dd.MM.yyyy"),
+                DateTimeFormatter.ofPattern("dd/MM/yyyy")
         };
 
-        for (SimpleDateFormat format : dateFormats) {
+        for (DateTimeFormatter formatter : dateFormatters) {
             try {
-                return format.parse(dateStr);
-            } catch (ParseException e) {
+                // Пробуем парсить как дату с временем
+                if (formatter.toString().contains("HH:mm:ss")) {
+                    LocalDateTime localDateTime = LocalDateTime.parse(dateStr, formatter);
+                    return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+                } else {
+                    // Парсим как просто дату
+                    LocalDate localDate = LocalDate.parse(dateStr, formatter);
+                    return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                }
+            } catch (DateTimeParseException e) {
                 // Пропускаем и пробуем следующий формат
             }
         }
 
         // Если ни один формат не подошел, возвращаем текущую дату
         return new Date();
+    }
+
+    // Вспомогательные методы для конвертации между Date и LocalDate/LocalDateTime
+
+    /**
+     * Конвертирует Date в LocalDate
+     * @param date объект Date
+     * @return объект LocalDate
+     */
+    public static LocalDate toLocalDate(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    /**
+     * Конвертирует LocalDate в Date
+     * @param localDate объект LocalDate
+     * @return объект Date
+     */
+    public static Date toDate(LocalDate localDate) {
+        if (localDate == null) {
+            return null;
+        }
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    /**
+     * Конвертирует Date в LocalDateTime
+     * @param date объект Date
+     * @return объект LocalDateTime
+     */
+    public static LocalDateTime toLocalDateTime(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
+    /**
+     * Конвертирует LocalDateTime в Date
+     * @param localDateTime объект LocalDateTime
+     * @return объект Date
+     */
+    public static Date toDate(LocalDateTime localDateTime) {
+        if (localDateTime == null) {
+            return null;
+        }
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

@@ -14,12 +14,16 @@ import com.example.diplom.expenses.ExpensesActivity;
 import com.example.diplom.settings.SettingsActivity;
 import com.example.diplom.utils.ExitDialogFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Главная активность приложения
  */
 public class MainActivity extends BaseLocaleActivity implements ExitDialogFragment.ExitDialogListener {
 
     private ActivityMainBinding binding;
+    private MainMenuAdapter menuAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +32,56 @@ public class MainActivity extends BaseLocaleActivity implements ExitDialogFragme
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
 
-        setupClickListeners();
+        setupRecyclerView();
         setupBackPressHandler();
+    }
+
+    /**
+     * Настройка RecyclerView с элементами меню
+     */
+    private void setupRecyclerView() {
+        List<MenuItemData> menuItems = createMenuItems();
+        menuAdapter = new MainMenuAdapter(menuItems);
+        binding.menuRecyclerView.setAdapter(menuAdapter);
+    }
+
+    /**
+     * Создание списка элементов меню
+     */
+    private List<MenuItemData> createMenuItems() {
+        List<MenuItemData> items = new ArrayList<>();
+
+        items.add(new MenuItemData(
+                R.drawable.ic_money,
+                R.string.view_expenses,
+                R.string.expenses_menu_description,
+                () -> {
+                    Intent intent = new Intent(MainActivity.this, ExpensesActivity.class);
+                    startActivity(intent);
+                }
+        ));
+
+        items.add(new MenuItemData(
+                R.drawable.ic_currency,
+                R.string.currency_rates,
+                R.string.currency_menu_description,
+                () -> {
+                    Intent intent = new Intent(MainActivity.this, CurrencyActivity.class);
+                    startActivity(intent);
+                }
+        ));
+
+        items.add(new MenuItemData(
+                R.drawable.ic_settings,
+                R.string.settings,
+                R.string.settings_menu_description,
+                () -> {
+                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                }
+        ));
+
+        return items;
     }
 
     /**
@@ -41,27 +93,6 @@ public class MainActivity extends BaseLocaleActivity implements ExitDialogFragme
             public void handleOnBackPressed() {
                 showExitDialog();
             }
-        });
-    }
-
-    /**
-     * Настройка обработчиков кликов
-     */
-    private void setupClickListeners() {
-        binding.viewExpensesButton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, ExpensesActivity.class);
-            startActivity(intent);
-        });
-
-
-        binding.viewCurrencyButton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, CurrencyActivity.class);
-            startActivity(intent);
-        });
-
-        binding.settingsButton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-            startActivity(intent);
         });
     }
 

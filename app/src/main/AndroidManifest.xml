@@ -37,26 +37,6 @@
             android:parentActivityName=".expenses.ExpensesActivity" />
 
         <activity
-            android:name=".analytics.AnalyticsActivity"
-            android:exported="false"
-            android:parentActivityName=".MainActivity" />
-
-        <activity
-            android:name=".taxes.TaxActivity"
-            android:exported="false"
-            android:parentActivityName=".MainActivity" />
-
-        <activity
-            android:name=".taxes.TaxDetailActivity"
-            android:exported="false"
-            android:parentActivityName=".taxes.TaxActivity" />
-
-        <activity
-            android:name=".taxes.TaxCalculatorActivity"
-            android:exported="false"
-            android:parentActivityName=".taxes.TaxActivity" />
-
-        <activity
             android:name=".currency.CurrencyActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
@@ -70,11 +50,6 @@
             android:name=".settings.SettingsActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
-
-        <receiver
-            android:name=".utils.NotificationReceiver"
-            android:exported="false" />
-
     </application>
 
 </manifest>

@@ -219,4 +219,9 @@
     <string name="error_no_internet">Нет подключения к интернету</string>
     <string name="error_network">Ошибка сети</string>
 
+    <!-- Описания для элементов главного меню -->
+    <string name="expenses_menu_description">Управление расходами и бюджетом. Добавляйте, редактируйте и анализируйте ваши финансовые операции</string>
+    <string name="currency_menu_description">Текущие курсы валют и конвертер. Отслеживайте изменения курсов основных мировых валют</string>
+    <string name="settings_menu_description">Настройки приложения. Измените язык, тему, уведомления и другие параметры</string>
+
 </resources>

@@ -43,13 +43,6 @@
             app:icon="@drawable/ic_currency"
             app:useSimpleSummaryProvider="true" />
 
-        <SwitchPreferenceCompat
-            android:defaultValue="true"
-            android:key="pref_notifications"
-            android:title="@string/settings_notifications"
-            app:iconSpaceReserved="true"
-            app:icon="@drawable/ic_notifications" />
-
     </PreferenceCategory>
 
     <PreferenceCategory
