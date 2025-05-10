@@ -8,20 +8,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.diplom.api.ApiClient;
-import com.example.diplom.api.ApiService;
 import com.example.diplom.api.CurrencyApiService;
 import com.example.diplom.api.models.CurrencyRate;
 import com.example.diplom.database.AppDatabase;
 import com.example.diplom.database.dao.CurrencyDao;
 import com.example.diplom.database.entities.Currency;
-import com.example.diplom.utils.DateUtils;
 import com.example.diplom.utils.PreferenceUtils;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;

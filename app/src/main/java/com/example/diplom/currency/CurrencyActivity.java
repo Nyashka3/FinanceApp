@@ -36,7 +36,6 @@ public class CurrencyActivity extends BaseLocaleActivity implements
     private CurrencyViewModel viewModel;
     private CurrencyAdapter adapter;
     private MenuItem filterMenuItem;
-    private BadgeDrawable filterBadge;
     private boolean isFilterActive = false;
 
     @Override

@@ -12,9 +12,7 @@ import com.example.diplom.currency.CurrencyActivity;
 import com.example.diplom.databinding.ActivityMainBinding;
 import com.example.diplom.expenses.ExpensesActivity;
 import com.example.diplom.settings.SettingsActivity;
-import com.example.diplom.taxes.TaxActivity;
 import com.example.diplom.utils.ExitDialogFragment;
-import com.google.android.material.snackbar.Snackbar;
 
 /**
  * Главная активность приложения
@@ -61,20 +59,10 @@ public class MainActivity extends BaseLocaleActivity implements ExitDialogFragme
             startActivity(intent);
         });
 
-//        binding.viewTaxesButton.setOnClickListener(view -> {
-//            Intent intent = new Intent(MainActivity.this, TaxActivity.class);
-//            startActivity(intent);
-//        });
-
         binding.settingsButton.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
         });
-
-//        binding.addExpenseFab.setOnClickListener(view -> {
-//
-//            Snackbar.make(view, R.string.add_expense_coming_soon, Snackbar.LENGTH_SHORT).show();
-//        });
     }
 
     @Override

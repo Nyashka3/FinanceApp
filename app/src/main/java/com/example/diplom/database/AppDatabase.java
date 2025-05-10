@@ -9,18 +9,12 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.example.diplom.database.dao.BudgetDao;
 import com.example.diplom.database.dao.CategoryDao;
 import com.example.diplom.database.dao.CurrencyDao;
 import com.example.diplom.database.dao.ExpenseDao;
-import com.example.diplom.database.dao.IncomeDao;
-import com.example.diplom.database.dao.TaxDao;
-import com.example.diplom.database.entities.Budget;
 import com.example.diplom.database.entities.Category;
 import com.example.diplom.database.entities.Currency;
 import com.example.diplom.database.entities.Expense;
-import com.example.diplom.database.entities.Income;
-import com.example.diplom.database.entities.Tax;
 import com.example.diplom.utils.DateConverter;
 import com.example.diplom.utils.ExpenseCategoryUtils;
 
@@ -29,7 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Database(
-        entities = {Budget.class, Category.class, Expense.class, Income.class, Tax.class, Currency.class},
+        entities = {Category.class, Expense.class, Currency.class},
         version = 1,
         exportSchema = false
 )
@@ -42,11 +36,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
 
-    public abstract BudgetDao budgetDao();
     public abstract CategoryDao categoryDao();
     public abstract ExpenseDao expenseDao();
-    public abstract IncomeDao incomeDao();
-    public abstract TaxDao taxDao();
     public abstract CurrencyDao currencyDao();
 
     public static AppDatabase getDatabase(final Context context) {

@@ -37,19 +37,4 @@
         <item>USD</item>
     </string-array>
 
-    <!-- Массивы для типов налогов -->
-    <string-array name="tax_type_entries">
-        <item>@string/usn_income</item>
-        <item>@string/usn_income_expense</item>
-        <item>@string/patent</item>
-        <item>@string/insurance_contributions</item>
-        <item>@string/income_tax</item>
-        <item>@string/property_tax</item>
-    </string-array>
-
-    <string-array name="tax_status_entries">
-        <item>@string/status_paid</item>
-        <item>@string/status_upcoming</item>
-        <item>@string/status_overdue</item>
-    </string-array>
 </resources>
