@@ -26,19 +26,4 @@ public interface CurrencyApiService {
             @Query("currencies") String currencies,
             @Query("base_currency") String baseCurrency
     );
-    /**
-     * Получение исторических курсов валют
-     * @param days количество дней истории
-     * @return список исторических курсов валют
-     */
-    @GET("currency/history")
-    Call<List<CurrencyRate>> getHistoricalRates(@Query("days") int days);
-
-    /**
-     * Получение курса конкретной валюты
-     * @param code код валюты (например, "USD", "EUR")
-     * @return курс валюты
-     */
-    @GET("currency/rate")
-    Call<CurrencyRate> getRateByCode(@Query("code") String code);
 }
