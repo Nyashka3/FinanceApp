@@ -7,7 +7,7 @@ import androidx.room.ColumnInfo;
 import java.util.Date;
 
 /**
- * Сущность категории расходов/доходов
+ * Сущность категории расходов
  */
 @Entity(tableName = "categories")
 public class Category {

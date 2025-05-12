@@ -89,8 +89,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
         // Создание категорий доходов
         Category productSalesCat = new Category();
-        productSalesCat.setName("Продажи продукции");
-        productSalesCat.setDescription("Доходы от реализации продукции");
+        productSalesCat.setName("Покупки");
+        productSalesCat.setDescription("Затраты от покупки");
         productSalesCat.setExpense(false);
         productSalesCat.setIcon("ic_sales");
         productSalesCat.setColor("#2ecc71");
@@ -99,7 +99,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
         Category servicesCat = new Category();
         servicesCat.setName("Услуги");
-        servicesCat.setDescription("Доходы от оказания услуг");
+        servicesCat.setDescription("Затраты от использования услуг");
         servicesCat.setExpense(false);
         servicesCat.setIcon("ic_services");
         servicesCat.setColor("#1abc9c");
@@ -108,7 +108,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
         Category investmentsCat = new Category();
         investmentsCat.setName("Инвестиции");
-        investmentsCat.setDescription("Доходы от инвестиционной деятельности");
+        investmentsCat.setDescription("Затраты от инвестиционной деятельности");
         investmentsCat.setExpense(false);
         investmentsCat.setIcon("ic_investments");
         investmentsCat.setColor("#3498db");
